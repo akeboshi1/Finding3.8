@@ -1,0 +1,47 @@
+{
+  "ver": "1.0.22",
+  "importer": "texture",
+  "imported": true,
+  "uuid": "74e21c4d-f5d9-43e4-8cf3-9707f0f4133e",
+  "files": [
+    ".json"
+  ],
+  "subMetas": {
+    "bg": {
+      "ver": "1.0.6",
+      "uuid": "0a16842d-fe99-43d4-8057-e76622cf64ea",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "74e21c4d-f5d9-43e4-8cf3-9707f0f4133e",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 750,
+      "height": 475,
+      "rawWidth": 750,
+      "rawHeight": 475,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {},
+      "imported": false,
+      "files": [],
+      "userData": {},
+      "displayName": "",
+      "id": "",
+      "name": ""
+    }
+  },
+  "userData": {
+    "wrapModeS": "repeat",
+    "wrapModeT": "repeat",
+    "minfilter": "linear",
+    "magfilter": "linear",
+    "mipfilter": "none",
+    "anisotropy": 0
+  }
+}

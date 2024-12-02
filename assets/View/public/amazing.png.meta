@@ -1,0 +1,47 @@
+{
+  "ver": "1.0.22",
+  "importer": "texture",
+  "imported": true,
+  "uuid": "14702e47-700f-4cd5-8ee5-be6bfaf9c36b",
+  "files": [
+    ".json"
+  ],
+  "subMetas": {
+    "amazing": {
+      "ver": "1.0.6",
+      "uuid": "1fa110fb-aeee-40e6-81db-4fcf7a9b6a93",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "14702e47-700f-4cd5-8ee5-be6bfaf9c36b",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 333,
+      "height": 111,
+      "rawWidth": 333,
+      "rawHeight": 111,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {},
+      "imported": false,
+      "files": [],
+      "userData": {},
+      "displayName": "",
+      "id": "",
+      "name": ""
+    }
+  },
+  "userData": {
+    "wrapModeS": "repeat",
+    "wrapModeT": "repeat",
+    "minfilter": "linear",
+    "magfilter": "linear",
+    "mipfilter": "none",
+    "anisotropy": 0
+  }
+}

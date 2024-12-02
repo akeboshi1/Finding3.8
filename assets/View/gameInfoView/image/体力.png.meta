@@ -1,0 +1,47 @@
+{
+  "ver": "1.0.22",
+  "importer": "texture",
+  "imported": true,
+  "uuid": "78c14f7a-b9df-43c3-8b2d-4c9fd864e802",
+  "files": [
+    ".json"
+  ],
+  "subMetas": {
+    "体力": {
+      "ver": "1.0.6",
+      "uuid": "2f5aa9ec-1ac9-497a-9eb1-9b3ecff43647",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "78c14f7a-b9df-43c3-8b2d-4c9fd864e802",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0.5,
+      "trimX": 1,
+      "trimY": 0,
+      "width": 52,
+      "height": 65,
+      "rawWidth": 54,
+      "rawHeight": 66,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {},
+      "imported": false,
+      "files": [],
+      "userData": {},
+      "displayName": "",
+      "id": "",
+      "name": ""
+    }
+  },
+  "userData": {
+    "wrapModeS": "repeat",
+    "wrapModeT": "repeat",
+    "minfilter": "linear",
+    "magfilter": "linear",
+    "mipfilter": "none",
+    "anisotropy": 0
+  }
+}
