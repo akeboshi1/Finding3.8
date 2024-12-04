@@ -1,8 +1,8 @@
 //事件派发
 import GameLog from "../GameLogMgr";
-import isNumber = cc.js.isNumber;
+import {EventTarget} from "cc";
 
-export default class EmitBase extends cc.EventTarget {
+export default class EmitBase extends EventTarget {
     /**
      *
      * @param type
@@ -10,15 +10,15 @@ export default class EmitBase extends cc.EventTarget {
      * @param target
      * @param useCapture
      */
-    public on<T extends Function>(type: string | number, handler: T, target: any, useCapture?: boolean): T {
+    public on<T extends Function>(type: string | number, handler: any, target: any, useCapture?: boolean): T {
         if ((!type && type != 0) || !target) {
             GameLog.error("事件对象|类型为空===> type = ", type, "target =", target);
             return;
         }
         if (typeof type == "string") {
-            return super.on(type, handler, target, useCapture)
+            return super.on(type, handler, target, useCapture);
         } else {
-            return super.on(type.toString(), handler, target, useCapture)
+            return super.on(type.toString(), handler, target, useCapture);
         }
     }
 
@@ -27,7 +27,7 @@ export default class EmitBase extends cc.EventTarget {
      * @param handler
      * @param target
      */
-    public once(type: string | number, handler: (arg1?: any, arg2?: any, arg3?: any, arg4?: any, arg5?: any) => void, target?: any): void {
+    public once(type: string | number, handler: any, target?: any) {
         if (!type || !target) {
             GameLog.error("事件对象|类型为空===> type = ", type, "target =", target);
             return;
@@ -48,7 +48,7 @@ export default class EmitBase extends cc.EventTarget {
      * @param handler
      * @param target
      */
-    public off(type: string | number, handler: Function, target: any): void {
+    public off(type: string | number, handler: any, target: any): void {
         if (!type || !target) {
             GameLog.error("事件对象|类型为空===> type = ", type, "target =", target);
             return;

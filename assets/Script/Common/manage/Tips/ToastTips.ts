@@ -1,14 +1,13 @@
 import LayerPanel, {UrlInfo} from "../Layer/LayerPanel";
 import GameLog from "../GameLogMgr";
-import url = cc.url;
 import PanelMgr from "../PanelMgr";
-import HomeView from "../../../Moudle/View/HomeView";
+import {_decorator,Label} from "cc";
 
-const {ccclass} = cc._decorator;
+const {ccclass} = _decorator;
 @ccclass
 export default class ToastTips extends LayerPanel {
 
-    private _labelContent: cc.Label = null;
+    private _labelContent: Label = null;
 
     public static getUrl(): UrlInfo {
         return {
@@ -18,7 +17,7 @@ export default class ToastTips extends LayerPanel {
     }
 
     public initUI(): void {
-        this._labelContent = this.getNode('container/label').getComponent(cc.Label);
+        this._labelContent = this.getNode('container/label').getComponent(Label);
     }
 
     public show(param: any): void {

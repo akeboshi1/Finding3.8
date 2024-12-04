@@ -4,7 +4,7 @@ import Emit from "../Common/manage/Emit/Emit";
 import {EventCode} from "../Common/manage/Emit/EmitData";
 import HomeView from "../Moudle/View/HomeView";
 import Global from "../Common/Global";
-import {macoro,dynamicAtlasManager,_decorator,Component,JsonAsset,Node} from "cc";
+import {macro,dynamicAtlasManager,_decorator,Component,JsonAsset,Node} from "cc";
 import AudioMgr from "../Common/manage/AudioMgr";
 
 macro.CLEANUP_IMAGE_CACHE = false;

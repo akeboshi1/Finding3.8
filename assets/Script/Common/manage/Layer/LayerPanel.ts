@@ -1,11 +1,10 @@
-import Emit from "../Emit/Emit";
+
 import LayerUI from "./LayerUI";
 import GameLog from "../GameLogMgr";
-import WechatApi from "../API/WechatApi";
-import WechatGameBox from "../ADV/Wechat/WechatGameBox";
 import Constant from "../../Constant";
 
-const {ccclass} = cc._decorator;
+import {_decorator,Asset} from "cc";
+const {ccclass} = _decorator;
 
 @ccclass
 export default abstract class LayerPanel extends LayerUI {
@@ -14,9 +13,9 @@ export default abstract class LayerPanel extends LayerUI {
         return null
     }
 
-    private _gameBox: WechatGameBox = null
+    // private _gameBox: WechatGameBox = null
     //动态加载的资源  ,将需要清除的动态资源放在asset中，在该面板销毁的时候，会自动释放这些资源
-    public assets: cc.Asset [] = []
+    public assets: Asset [] = []
 
     /**
      *
@@ -53,11 +52,11 @@ export default abstract class LayerPanel extends LayerUI {
      */
     public initGameBox() {
         // 处理 gameBox
-        if (this._gameBox != null) {
-            console.log("no destroy ")
-            this.showGameBox()
-            return
-        }
+        // if (this._gameBox != null) {
+        //     console.log("no destroy ")
+        //     this.showGameBox()
+        //     return
+        // }
 
         let nodeList = [];
         let node = this.getNode(this.gameBoxUrl());
@@ -65,8 +64,8 @@ export default abstract class LayerPanel extends LayerUI {
             node.children.forEach((value) => {
                 nodeList.push(value);
             });
-            this._gameBox = new WechatApi.gameBox();
-            this._gameBox.init(nodeList, 1, Constant.EXPORT_TYPE.VIEW_BOX, true, this);
+            // this._gameBox = new WechatApi.gameBox();
+            // this._gameBox.init(nodeList, 1, Constant.EXPORT_TYPE.VIEW_BOX, true, this);
         }
     }
 
@@ -77,17 +76,17 @@ export default abstract class LayerPanel extends LayerUI {
         }
     }
 
-    public showGameBox() {
-        if (this._gameBox) {
-            this._gameBox.show()
-        }
-    }
-
-    public hideGameBox() {
-        if (this._gameBox) {
-            this._gameBox.hide()
-        }
-    }
+    // public showGameBox() {
+    //     if (this._gameBox) {
+    //         this._gameBox.show()
+    //     }
+    // }
+    //
+    // public hideGameBox() {
+    //     if (this._gameBox) {
+    //         this._gameBox.hide()
+    //     }
+    // }
 
     public initMoreGame(f: Function) {
         let moreGame = this.getNode(this.moreGameUrl())

@@ -1,45 +1,47 @@
 /**
  * 动画效果类
  */
-
-import easeInOut = cc.easeInOut;
+import{tween,Vec3,Vec2,Node,UITransform,view,UIOpacity} from "cc"
+// import easeInOut = easeInOut;
 import GameLog from "./GameLogMgr";
-import Tween = cc.Tween;
-import tween = cc.tween;
+// import Tween = Tween;
+// import tween = tween;
 
 export default class ActionMgr {
 
     //疯狂抖动手指
-    public static shakeHand(node: cc.Node) {
+    public static shakeHand(node: Node) {
         tween(node)
-            .by(0.05, {y: 20})
-            .by(0.05, {y: -20})
+            .by(0.05, {position:new Vec3(node.position.x,node.position.y+20,node.position.z)})
+            .by(0.05, {position:new Vec3(node.position.x,node.position.y-20,node.position.z)})
             .union()
             .repeatForever()
             .start()
     }
 
 
-    public static scaleNode(node: cc.Node, scale: number, time = 0.5) {
+    public static scaleNode(node: Node, scale: number, time = 0.5) {
+        let uiTransform = node.getComponent(UITransform);
         try {
-            cc.tween(node)
-                .to(0, {scale: scale, y: -node.height * (1 - scale)})
-                .to(time, {scale: 1, y: 0})
+            tween(node)
+                .to(0, {scale: new Vec3(scale,scale,scale), position:new Vec3(node.position.x,-uiTransform.height * (1 - scale),node.position.z) })
+                .to(time, {scale: new Vec3(1,1,1), position:new Vec3(node.position.x,0,node.position.z)})
                 .start()
         } catch (e) {
-            node.scale = 1;
-            node.y = 0;
+            node.setScale(new Vec3(1,1,1));
+            node.setPosition(new Vec3(node.position.x,0,node.position.z));
             GameLog.log('shake动画异常', e);
         }
     }
 
-    public static moveUpDownForever(node: cc.Node, runTime = 0.2, diff = 10) {
-        cc.tween(node).repeatForever(
-            cc.sequence(
-                cc.moveBy(runTime, new cc.Vec2(0, diff)),
-                cc.moveBy(runTime, new cc.Vec2(0, -diff)),
-            )
-        ).start();
+    public static moveUpDownForever(node: Node, runTime = 0.2, diff = 10) {
+        let _tween = tween(node);
+        _tween.sequence(
+            tween().by(runTime, {position:new Vec3(0, diff)}),
+            tween().by(runTime, {position:new Vec3(0, -diff)}),
+        )
+        .repeatForever().
+        start();
     }
 
     /**
@@ -47,14 +49,14 @@ export default class ActionMgr {
      * @param node
      * @param duration
      */
-    public static rotate(node: cc.Node, duration = 3) {
+    public static rotate(node: Node, duration = 3) {
         try {
-            cc.tween(node).repeatForever(
-                cc.sequence(
-                    cc.rotateTo(duration, 180),
-                    cc.rotateTo(duration, 360),
-                )
-            ).start();
+            let _tween = tween(node);
+            _tween.sequence(
+                tween().to(duration, {angle:180}),
+                tween().to(duration, {angle:360}),
+            )
+            .repeatForever().start();
 
         } catch (e) {
             GameLog.error('shakeNode异常', e, node);
@@ -73,17 +75,18 @@ export default class ActionMgr {
      * @param endScale
      * @constructor
      */
-    public static scaleStop(node: cc.Node, timeRun = 0.1, timeStop = 10, scale = 0.3, count = 1, endScale = 1) {
+    public static scaleStop(node: Node, timeRun = 0.1, timeStop = 10, scale = 0.3, count = 1, endScale = 1) {
         try {
             if (!node) {
                 return;
             }
-            node.scale = endScale;
-            cc.tween(node)
+            node.setScale(new Vec3(endScale, endScale, endScale));
+            // node.scale = endScale;
+            tween(node)
                 .repeatForever(
-                    cc.tween()
+                    tween()
                         .repeat(count,
-                            cc.tween()
+                            tween()
                                 .to(timeRun, {scale: 1 + scale}, {easing: "smooth"})
                                 .to(timeRun, {scale: endScale}, {easing: "smooth"})
                         )
@@ -99,10 +102,10 @@ export default class ActionMgr {
         }
     }
 
-    public static shakeNode(node: cc.Node, timeRun = 0.3, dstAngle: number = 10, count: number = 5) {
-        cc.tween(node)
+    public static shakeNode(node: Node, timeRun = 0.3, dstAngle: number = 10, count: number = 5) {
+        tween(node)
             .repeat(count,
-                cc.tween()
+                tween()
                     .to(timeRun, {angle: -dstAngle})
                     .to(timeRun, {angle: dstAngle})
             ).to(timeRun, {angle: 0}).start();
@@ -115,14 +118,13 @@ export default class ActionMgr {
      * @param dstAngle
      * @constructor
      */
-    public static shakeNodeForever(node: cc.Node, duration = 4, dstAngle = 10) {
+    public static shakeNodeForever(node: Node, duration = 4, dstAngle = 10) {
         try {
-            cc.tween(node).repeatForever(
-                cc.sequence(
-                    cc.rotateTo(duration, -dstAngle),
-                    cc.rotateTo(duration, dstAngle),
-                )
-            ).start();
+            tween(node).sequence(
+                tween().to(duration, {angle:-dstAngle}),
+                tween().to(duration, {angle:dstAngle}),
+            )
+            .repeatForever().start();
 
         } catch (e) {
             GameLog.error('shakeNode异常', e, node);
@@ -138,14 +140,14 @@ export default class ActionMgr {
      * @param dstAngle 晃动的角度
      * @param shakeCount 晃动的次数
      */
-    public static shakeStop(node: cc.Node, timeRun = 0.1, timeStop = 10, dstAngle = 10, shakeCount = 5) {
+    public static shakeStop(node: Node, timeRun = 0.1, timeStop = 10, dstAngle = 10, shakeCount = 5) {
         try {
-            cc.tween(node)
+            tween(node)
                 .repeatForever(
-                    cc.tween()
+                    tween()
                         .delay(timeStop)
                         .repeat(shakeCount,
-                            cc.tween()
+                            tween()
                                 .to(timeRun, {angle: -dstAngle})
                                 .to(timeRun, {angle: dstAngle})
                         )
@@ -159,20 +161,20 @@ export default class ActionMgr {
         }
     }
 
-    public static scaleMove(node: cc.Node, delayTime: number = 3, repeatCount: number = 2,) {
-        cc.tween(node)
+    public static scaleMove(node: Node, delayTime: number = 3, repeatCount: number = 2,) {
+        tween(node)
             .repeatForever(
-                cc.tween()
+                tween()
                     .delay(delayTime)
                     .repeat(repeatCount,
-                        cc.tween()
+                        tween()
                             .to(0.3, {scale: 1.1})
                             .to(0, {scale: 1})
                             .to(0.3, {scale: 1.2})
                             .to(0, {scale: 1})
                     )
                 // .repeat(repeatCount,
-                //     cc.tween()
+                //     tween()
                 // )
             )
             .start();
@@ -183,18 +185,18 @@ export default class ActionMgr {
      * @param node
      * @param duration
      */
-    public static moveBigIn(node: cc.Node, duration = 0.3) {
+    public static moveBigIn(node: Node, duration = 0.3) {
         if (!node) {
             return false;
         }
         try {
-            node.scale = 2;
-            cc.tween(node)
-                .to(duration, {scale: 1}, easeInOut(1))
+            node.setScale(new Vec3(2,2,2));
+            tween(node)
+                .to(duration, {scale: new Vec3(1,1,1)}, { easing: 'sineInOut'}) //easeInOut(1)
                 .start();
 
         } catch (e) {
-            node.scale = 1;
+            node.setScale(new Vec3(1,1,1));
             GameLog.error('moveIn 异常', e, node);
 
         }
@@ -207,20 +209,21 @@ export default class ActionMgr {
      * @param duration
      * @param beginSale
      */
-    public static moveIn(node: cc.Node, duration: number = 0.4, beginSale: number = 0) {
-        node.scale = beginSale;
-        cc.tween(node)
-            .to(duration, {scale: 1}, {easing: 'backOut'})
+    public static moveIn(node: Node, duration: number = 0.4, beginSale: number = 0) {
+        node.setScale(new Vec3(beginSale,beginSale,beginSale));
+        tween(node)
+            .to(duration, {scale: new Vec3(1,1,1)}, {easing: 'backOut'})
             .start();
     }
 
     /**
      * 界面从上推下
      */
-    public static moveTop(node: cc.Node, time: number = 0.4) {
-        node.y = node.height / 2;
-        cc.tween(node)
-            .to(time,{y: 0}, {easing: "smooth"})
+    public static moveTop(node: Node, time: number = 0.4) {
+        let uiTransform = node.getComponent(UITransform);
+        node.setPosition(new Vec3(node.position.x,uiTransform.height / 2,node.position.z));
+        tween(node)
+            .to(time,{position: new Vec3(node.position.x,0,node.position.z)}, {easing: "smooth"})
             .start()
     }
 
@@ -230,17 +233,17 @@ export default class ActionMgr {
      * @param duration
      * @param endScale
      */
-    public static moveOut(node: cc.Node, duration = 0.4, endScale = 0) {
+    public static moveOut(node: Node, duration = 0.4, endScale = 0) {
         if (!node) {
             return false;
         }
         try {
-            node.scale = 1;
-            cc.tween(node)
-                .to(duration, {scale: endScale})
+            node.setScale(new Vec3(0,0,0));
+            tween(node)
+                .to(duration, {scale: new Vec3(endScale,endScale,endScale)}, {easing: 'linear'})
                 .start();
         } catch (e) {
-            node.scale = 0;
+            node.setScale(0,0,0);
             GameLog.error('moveOut 异常', e, node);
         }
     }
@@ -261,7 +264,7 @@ export default class ActionMgr {
      * @param time 动作进行的时间/s
      * @param delay 动作延迟进行的时间/s
      */
-    public static moveInSide(node: cc.Node, beginSide = this.TWEEN_FROM_SIDE.TOP, time = 0.5, delay = 0) {
+    public static moveInSide(node: Node, beginSide = this.TWEEN_FROM_SIDE.TOP, time = 0.5, delay = 0) {
         if (!node) {
             return false;
         }
@@ -272,7 +275,7 @@ export default class ActionMgr {
             let resultPos = this._getSideResultPos(node, beginSide);
             node.position = resultPos;
             GameLog.log("节点", node.name, "界面外坐标为：", resultPos);
-            cc.tween(node)
+            tween(node)
                 .delay(delay)
                 .to(time, {position: this._moveSideNodePosition[node.uuid].clone()}, {easing: 'quartIn'})
                 .start();
@@ -289,7 +292,7 @@ export default class ActionMgr {
      * @param endSide 界面移出的边
      * @param time 动作进行的时间/s
      */
-    public static moveOutSide(node: cc.Node, endSide = this.TWEEN_FROM_SIDE.TOP, time = 0.5) {
+    public static moveOutSide(node: Node, endSide = this.TWEEN_FROM_SIDE.TOP, time = 0.5) {
         if (!node) {
             return false;
         }
@@ -298,7 +301,7 @@ export default class ActionMgr {
         }
         try {
             let resultPos = this._getSideResultPos(node, endSide);
-            cc.tween(node)
+            tween(node)
                 .to(time, {position: resultPos}, {easing: 'quartIn'})
                 .call(() => {
                     node.position = this._moveSideNodePosition[node.uuid].clone();
@@ -312,26 +315,27 @@ export default class ActionMgr {
 
     }
 
-    private static _getSideResultPos(node: cc.Node, side) {
+    private static _getSideResultPos(node: Node, side) {
         //获取屏幕尺寸
-        let winSize = cc.winSize;
+        let winSize = view.getVisibleSize();
         let windowHeight = winSize.height;
         let windowWidth = winSize.width;
         GameLog.log("屏幕尺寸大小为：", windowHeight, windowWidth);
         //根据节点移动方向获取坐标
         let pos;
+        let uiTransform = node.getComponent(UITransform);
         switch (side) {
             case ActionMgr.TWEEN_FROM_SIDE.TOP:
-                pos = new cc.Vec2(node.x, windowHeight + node.height);
+                pos = new Vec2(node.position.x, windowHeight + uiTransform.height);
                 break;
             case ActionMgr.TWEEN_FROM_SIDE.DOWN:
-                pos = new cc.Vec2(node.x, -windowHeight - node.height);
+                pos = new Vec2(node.position.x, -windowHeight - uiTransform.height);
                 break;
             case ActionMgr.TWEEN_FROM_SIDE.LEFT:
-                pos = new cc.Vec2(-windowWidth - node.width, node.y);
+                pos = new Vec2(-windowWidth - uiTransform.width, node.position.y);
                 break;
             case ActionMgr.TWEEN_FROM_SIDE.RIGHT:
-                pos = new cc.Vec2(windowWidth + node.width, node.y);
+                pos = new Vec2(windowWidth + uiTransform.width, node.position.y);
                 break;
         }
         return pos;
@@ -344,64 +348,71 @@ export default class ActionMgr {
      * @param disMove 运动的距离
      * @param timeMove 运动的时间/s
      */
-    public static moveLeftRight(node: cc.Node, direction, disMove: number, timeMove: number) {
+    public static moveLeftRight(node: Node, direction, disMove: number, timeMove: number) {
         try {
             let lessPos;
             let morePos;
             switch (direction) {
                 case ActionMgr.TWEEN_FROM_SIDE.LEFT:
                 case ActionMgr.TWEEN_FROM_SIDE.RIGHT:
-                    lessPos = new cc.Vec2(node.x - disMove, node.y);
-                    morePos = new cc.Vec2(node.x + disMove, node.y);
+                    lessPos = new Vec2(node.position.x - disMove, node.position.y);
+                    morePos = new Vec2(node.position.x + disMove, node.position.y);
                     break;
                 case ActionMgr.TWEEN_FROM_SIDE.TOP:
                 case ActionMgr.TWEEN_FROM_SIDE.DOWN:
-                    lessPos = new cc.Vec2(node.x, node.y - disMove);
-                    morePos = new cc.Vec2(node.x, node.y + disMove);
+                    lessPos = new Vec2(node.position.x, node.position.y - disMove);
+                    morePos = new Vec2(node.position.x, node.position.y + disMove);
                     break;
             }
-            cc.tween(node).repeatForever(
-                cc.sequence(
-                    cc.moveTo(timeMove, lessPos),
-                    cc.moveTo(timeMove, morePos)
-                )
-            ).start();
+            tween(node).sequence(
+                tween().to(timeMove, lessPos),
+                tween().to(timeMove, morePos)
+            )
+                .repeatForever().start();
 
         } catch (e) {
             GameLog.error('moveLeftRight异常', e, node);
         }
     }
 
-    public static showGradually(node: cc.Node, duration = 1, delay = 0, endOpacity = 255, starOpacity = 0) {
+    public static showGradually(node: Node, duration = 1, delay = 0, endOpacity = 255, starOpacity = 0) {
+        let opacity = node.getComponent(UIOpacity);
+        if(!opacity){
+            node.addComponent(UIOpacity);
+        }
         try {
-            cc.tween(node)
+            tween(opacity)
                 .call(() => {
-                    node.opacity = starOpacity;
+                    opacity.opacity = starOpacity;
                     node.active = true;
                 })
                 .delay(delay)
-                .to(duration, {opacity: endOpacity})
+                tween(opacity).to(duration, {opacity:0})
                 .start()
         } catch (e) {
-            node.opacity = endOpacity;
+            opacity.opacity = endOpacity;
             GameLog.error('showGradually异常', e, node);
         }
     }
 
-    public static hideGradually(node: cc.Node, duration = 1, delay = 0, endOpacity = 50) {
+    public static hideGradually(node: Node, duration = 1, delay = 0, endOpacity = 50) {
+        let _opacity = node.getComponent(UIOpacity);
+        if(!_opacity){
+            node.addComponent(UIOpacity);
+        }
         try {
             node.active = true;
-            cc.tween(node)
+            tween(node)
                 .delay(delay)
                 .to(duration, {opacity: endOpacity}, {easing: 'quartIn'})
                 .call(() => {
                     node.active = false;
-                    node.opacity = 255;
+                    _opacity.opacity = 255;
                 })
                 .start()
 
         } catch (e) {
-            node.opacity = endOpacity;
+            _opacity.opacity = endOpacity;
             GameLog.error('showGradually异常', e, node);
         }
     }

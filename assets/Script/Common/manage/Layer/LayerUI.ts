@@ -1,13 +1,14 @@
 import AudioMgr from "../AudioMgr";
 import GameLog from "../GameLogMgr";
+import {_decorator,Component,Node,Button,find,Color,Sprite} from "cc";
 
 /**
  * 这个是 封装了一些方法  ，例如 注册点击事件 销毁事件 等等
  */
-const {ccclass} = cc._decorator;
+const {ccclass} = _decorator;
 
 @ccclass
-export default class LayerUI extends cc.Component {
+export default class LayerUI extends Component {
 
     private _touchList: { [key: string]: { target, handler, callObj } } = {};
     private _touchEndList: { [key: string]: { target, handler, callObj } } = {}
@@ -15,18 +16,21 @@ export default class LayerUI extends cc.Component {
     private _enableList: { [key: string]: { enabled: boolean, isGray: boolean } } = {};
 
 
+    private grayColor: Color = new Color(153,145,145,255);
+    private normalColor:Color = new Color(255,255,255,255);
     /**
      * 是否交互 需在target注册onTouch之后
      * @param target
      * @param v
      * @param isGray
      */
-    protected setInteractable(target: cc.Node, v: boolean, isGray: boolean = true) {
+    protected setInteractable(target: Node, v: boolean, isGray: boolean = true) {
         if (!target)
             return;
-        let button: cc.Button = target.getComponent(cc.Button);
+        let button: Button = target.getComponent(Button);
         if (button) {
-            button.enableAutoGrayEffect = isGray;
+            let btnSprite = button.getComponent(Sprite);
+            btnSprite.color = isGray==true?this.grayColor:this.normalColor
             button.interactable = v;
         }
         this._enableList[target.name] = {enabled: v, isGray};
@@ -40,7 +44,7 @@ export default class LayerUI extends cc.Component {
      * @param scale     缩放值
      * @param stopEvent
      */
-    protected onTouch(target: cc.Node, handler: Function, sound: string = "click", scale = 0.9, stopEvent = true) {
+    protected onTouch(target: Node, handler: Function, sound: string = "click", scale = 0.9, stopEvent = true) {
         if (!target || !handler) {
             GameLog.error("target || handler为空-->", target, handler);
             return;
@@ -53,11 +57,11 @@ export default class LayerUI extends cc.Component {
         }
 
         //添加一个button 动画
-        let button = target.getComponent(cc.Button);
+        let button = target.getComponent(Button);
         if (scale != 1) {
             if (!button) {
-                button = target.addComponent(cc.Button);
-                button.transition = cc.Button.Transition.SCALE;
+                button = target.addComponent(Button);
+                button.transition = Button.Transition.SCALE;
                 button.zoomScale = scale;
             }
         }
@@ -89,11 +93,11 @@ export default class LayerUI extends cc.Component {
             }
             handler.call(callObj, event);
         };
-        target.on(cc.Node.EventType.TOUCH_START, touchHandler);
+        target.on(Node.EventType.TOUCH_START, touchHandler);
         this._touchList[targetName] = {target: target, handler: touchHandler, callObj: callObj};
     }
 
-    protected onTouchEnd(target: cc.Node, handler: Function) {
+    protected onTouchEnd(target: Node, handler: Function) {
         if (!target || !handler) {
             GameLog.error("target || handle为空 ondTouchEnd -->", target, handler)
             return
@@ -107,13 +111,13 @@ export default class LayerUI extends cc.Component {
         let touchHandler = (event) => {
             handler.call(callObj, event);
         };
-        target.on(cc.Node.EventType.TOUCH_END, touchHandler);
-        target.on(cc.Node.EventType.TOUCH_CANCEL, touchHandler);
+        target.on(Node.EventType.TOUCH_END, touchHandler);
+        target.on(Node.EventType.TOUCH_CANCEL, touchHandler);
 
         this._touchEndList[targetName] = {target: target, handler: touchHandler, callObj: callObj};
     }
 
-    protected offTouchEnd(target: cc.Node) {
+    protected offTouchEnd(target: Node) {
         if (!target) {
             GameLog.error("target 为空 ")
             return
@@ -121,8 +125,8 @@ export default class LayerUI extends cc.Component {
         let targetName: string = target.name
         if (this._touchEndList[targetName]) {
             let handler = this._touchEndList[targetName].handler
-            target.off(cc.Node.EventType.TOUCH_END, handler)
-            target.off(cc.Node.EventType.TOUCH_CANCEL, handler)
+            target.off(Node.EventType.TOUCH_END, handler)
+            target.off(Node.EventType.TOUCH_CANCEL, handler)
             delete this._touchEndList[targetName]
         }
     }
@@ -131,7 +135,7 @@ export default class LayerUI extends cc.Component {
      * 移除对象点击事件
      * @param target
      */
-    protected offTouch(target: cc.Node) {
+    protected offTouch(target: Node) {
         if (!target) {
             GameLog.error("target 为空");
             return
@@ -139,7 +143,7 @@ export default class LayerUI extends cc.Component {
         let targetName: string = target.name;
         if (this._touchList[targetName]) {
             let touchHandler = this._touchList[targetName].handler;
-            target.off(cc.Node.EventType.TOUCH_START, touchHandler);
+            target.off(Node.EventType.TOUCH_START, touchHandler);
             delete this._touchList[targetName]
         }
         delete this._enableList[targetName]
@@ -160,12 +164,12 @@ export default class LayerUI extends cc.Component {
      *
      * @param path 路径或者名字
      */
-    protected getNode(path: string): cc.Node {
-        let node: cc.Node = null;
+    protected getNode(path: string): Node {
+        let node: Node = null;
         if (path == "" || !path)
             return null;
         if (path.indexOf("/") != -1) {
-            node = cc.find(path, this.node);
+            node = find(path, this.node);
         } else {
             node = this.node.getChildByName(path);
         }
