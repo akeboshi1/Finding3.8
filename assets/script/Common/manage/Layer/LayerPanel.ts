@@ -6,7 +6,7 @@ import {_decorator,Asset} from "cc";
 const {ccclass} = _decorator;
 
 @ccclass
-export class LayerPanel extends LayerUI {
+export default class LayerPanel extends LayerUI {
     public static getUrl(): UrlInfo {
         GameLog.error("需要重写getURL");
         return null
@@ -20,23 +20,36 @@ export class LayerPanel extends LayerUI {
      *
      *  面板初始化,第一次生成的时候调用
      */
-    public initUI();
+    public initUI(){
+
+    }
 
     /**
      *
      * 面板显示 每次显示都调用 可以进行相关初始化（UI、事件）会在onload，start之前调用
      * @param param 面板显示参数
      */
-    public  show(param: any): void;
+    public show(param: any): void{
+
+    }
 
     /**
      * 面板隐藏  每次因此都调用
      */
-    public hide();
+    public hide(){
+
+    }
 
 
     protected moreGameUrl(): string {
         return "more_game"
+    }
+
+    /**
+     * gameBox 的路径，如果后续需要定制的化 ， 可在View中重写
+     */
+    protected gameBoxUrl(): string {
+        return "GameBox"
     }
 
     /**

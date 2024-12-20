@@ -1,8 +1,6 @@
 /**
  * 全局变量
  */
-import Bundle = cc.AssetManager.Bundle;
-
 export default class Global {
     public static config: any =
         {

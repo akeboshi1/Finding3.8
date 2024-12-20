@@ -1,5 +1,4 @@
 import Global, {ExportData} from "./Global";
-import WechatApi from "./manage/API/WechatApi";
 import Constant from "./Constant";
 import LoadMgr from "./manage/LoadMgr";
 import CacheMgr from "./manage/CacheMgr";
@@ -7,15 +6,13 @@ import TwoBox from "../Moudle/Box/TwoBox";
 import OneBox from "../Moudle/Box/OneBox";
 import ThreeBox from "../Moudle/Box/ThreeBox";
 import TreaView from "../Moudle/View/TreaView";
-import AppApi from "./manage/API/AppApi";
 import GameLogMgr from "./manage/GameLogMgr";
-import JiuWuSDK from "../SDK/JiuWuSDK";
 import Game from "../Scene/Game";
-import ToastTips from "./manage/Tips/ToastTips";
 import TestMgr from "./Test";
 import PanelMgr, {Layer} from "./manage/PanelMgr";
 import ShortageView from "../Moudle/View/ShortageView";
-import isNumber = cc.js.isNumber;
+import {js,ScrollView,Layout,v2,tween,view,screen,UITransform,Node,Vec3,Vec2,math} from "cc";
+import isNumber = js.isNumber;
 
 export default class Tools {
 
@@ -46,13 +43,13 @@ export default class Tools {
                 return;
             }
 
-            if (WechatApi.systemInterface.vibrateShort) {
-                WechatApi.systemInterface.vibrateShort({
-                    type: t,
-                });
-            } else {
-                GameLogMgr.warn('短震动 api 无法使用。');
-            }
+            // if (WechatApi.systemInterface.vibrateShort) {
+            //     WechatApi.systemInterface.vibrateShort({
+            //         type: t,
+            //     });
+            // } else {
+            //     GameLogMgr.warn('短震动 api 无法使用。');
+            // }
 
         } catch (e) {
             GameLogMgr.error(e);
@@ -68,11 +65,11 @@ export default class Tools {
                 GameLogMgr.warn('当前 震动关闭。');
                 return;
             }
-            if (WechatApi.systemInterface.vibrateLong) {
-                WechatApi.systemInterface.vibrateLong();
-            } else {
-                GameLogMgr.warn('长震动 api 无法使用。');
-            }
+            // if (WechatApi.systemInterface.vibrateLong) {
+            //     WechatApi.systemInterface.vibrateLong();
+            // } else {
+            //     GameLogMgr.warn('长震动 api 无法使用。');
+            // }
 
         } catch (e) {
             GameLogMgr.error(e);
@@ -268,39 +265,39 @@ export default class Tools {
      * @param resolve
      */
     public static navigateTo(gameBox: ExportData, name, resolve ?: any) {
-        try {
-            if (!gameBox) {
-                GameLogMgr.error('跳转移除', gameBox);
-            }
-            WechatApi.systemInterface_do("navigateToMiniProgram", null, () => {
-                    if (resolve) {
-                        resolve(true)
-                    }
-                },
-                {
-                    appId: gameBox.appId,
-                    path: gameBox.exportSrc,
-                    extraData: {
-                        exportId: gameBox.id
-                    },
-                    envVersion: "develop",
-                    success: (res) => {
-                        GameLogMgr.log("进入导出成功！", res);
-                        JiuWuSDK.exportLog(gameBox.id).then();
-                        JiuWuSDK.pushAction(5, name).then()
-                        if (resolve) {
-                            resolve(true)
-                        }
-                    },
-                    fail: (res) => {
-                        GameLogMgr.error("进入导出失败", res, gameBox, name);
-                        resolve(true)
-                    }
-                },
-            )
-        } catch (e) {
-            GameLogMgr.error('进入导出移除', gameBox, name);
-        }
+        // try {
+        //     if (!gameBox) {
+        //         GameLogMgr.error('跳转移除', gameBox);
+        //     }
+        //     WechatApi.systemInterface_do("navigateToMiniProgram", null, () => {
+        //             if (resolve) {
+        //                 resolve(true)
+        //             }
+        //         },
+        //         {
+        //             appId: gameBox.appId,
+        //             path: gameBox.exportSrc,
+        //             extraData: {
+        //                 exportId: gameBox.id
+        //             },
+        //             envVersion: "develop",
+        //             success: (res) => {
+        //                 GameLogMgr.log("进入导出成功！", res);
+        //                 JiuWuSDK.exportLog(gameBox.id).then();
+        //                 JiuWuSDK.pushAction(5, name).then()
+        //                 if (resolve) {
+        //                     resolve(true)
+        //                 }
+        //             },
+        //             fail: (res) => {
+        //                 GameLogMgr.error("进入导出失败", res, gameBox, name);
+        //                 resolve(true)
+        //             }
+        //         },
+        //     )
+        // } catch (e) {
+        //     GameLogMgr.error('进入导出移除', gameBox, name);
+        // }
     }
 
     /**
@@ -313,36 +310,50 @@ export default class Tools {
 
     private static _scrollViewData = {};
 
-    public static scrollViewOneItem(scrollView: cc.ScrollView, direction = 'v') {
+    public static scrollViewOneItem(scrollView: ScrollView, direction = 'v') {
         // 判断 scrollView 是否在滚动
         if (scrollView.isScrolling() || scrollView.isAutoScrolling()) {
             return;
         }
-        if (scrollView.content.childrenCount <= 0) {
+        if (scrollView.content.children.length <= 0) {
             return;
         }
 
         let uuid = scrollView.uuid;
-        let count = scrollView.content.childrenCount;
+        let count = scrollView.content.children.length;
 
         let scrollViewMax = 0;
         let pageSize = 0;
         let itemSize = 0;
-        let layout = scrollView.content.getComponent(cc.Layout);
+        let layout = scrollView.content.getComponent(Layout);
         if (!layout) {
             return;
         }
         let lineSize = 1;
+        let childNode =  scrollView.content.children[0];
+        let childTransform = childNode.getComponent(UITransform);
+        if(!childTransform) {
+            childTransform = childNode.addComponent(UITransform);
+        }
+        let scrollViewUiTransform = scrollView.node.getComponent(UITransform);
+        if(!scrollViewUiTransform) {
+            scrollViewUiTransform = scrollView.node.addComponent(UITransform);
+        }
+        let scrollViewContentUiTransform = scrollView.content.getComponent(UITransform);
+        if(!scrollViewContentUiTransform) {
+            scrollViewContentUiTransform = scrollView.content.addComponent(UITransform);
+        }
+
         if (direction === 'h') {
-            itemSize = scrollView.content.children[0].width + layout.spacingX;
-            pageSize = scrollView.node.width / itemSize;
+            itemSize = childTransform.width + layout.spacingX;
+            pageSize = scrollViewUiTransform.width / itemSize;
             scrollViewMax = scrollView.getMaxScrollOffset().x;
-            lineSize = Math.round(scrollView.content.height / (scrollView.content.children[0].height + layout.spacingY));
+            lineSize = Math.round(scrollViewContentUiTransform.height / (childTransform.height + layout.spacingY));
         } else {
-            itemSize = scrollView.content.children[0].height + layout.spacingY;
-            pageSize = scrollView.node.height / itemSize;
+            itemSize = childTransform.height + layout.spacingY;
+            pageSize = scrollViewUiTransform.height / itemSize;
             scrollViewMax = scrollView.getMaxScrollOffset().y;
-            lineSize = Math.round(scrollView.content.width / (scrollView.content.children[0].width + layout.spacingX));
+            lineSize = Math.round(scrollViewContentUiTransform.width / (childTransform.width + layout.spacingX));
         }
         if (scrollViewMax <= 0) {
             return;
@@ -369,15 +380,15 @@ export default class Tools {
         let endPosition = null;
         if (this._scrollViewData[uuid] == "next") {
             if (direction === 'h') {
-                endPosition = cc.v2(itemSize + scrollOffVar, keepVar);
+                endPosition = v2(itemSize + scrollOffVar, keepVar);
             } else {
-                endPosition = cc.v2(keepVar, itemSize + scrollOffVar);
+                endPosition = v2(keepVar, itemSize + scrollOffVar);
             }
         } else {
             if (direction === 'h') {
-                endPosition = cc.v2(scrollOffVar - itemSize, keepVar);
+                endPosition = v2(scrollOffVar - itemSize, keepVar);
             } else {
-                endPosition = cc.v2(keepVar, scrollOffVar - itemSize);
+                endPosition = v2(keepVar, scrollOffVar - itemSize);
             }
         }
         if (direction === 'h') {
@@ -414,7 +425,7 @@ export default class Tools {
      * @param view
      * @param timeSecond
      */
-    public static scrollView_auto_vertical(view: cc.ScrollView, timeSecond: number) {
+    public static scrollView_auto_vertical(view: ScrollView, timeSecond: number) {
         if (view.isScrolling() || view.isAutoScrolling()) {
             return
         }
@@ -439,17 +450,17 @@ export default class Tools {
 
         if (flag) {
             //反向
-            view.scrollToOffset(cc.v2(now_Position.x, now_Position.y - Global.config.exportScrollSpeed), timeSecond, false)
-            // view.scrollToOffset(cc.v2(now_Position.x, now_Position.y + 100), timeSecond, false)
+            view.scrollToOffset(v2(now_Position.x, now_Position.y - Global.config.exportScrollSpeed), timeSecond, false)
+            // view.scrollToOffset(v2(now_Position.x, now_Position.y + 100), timeSecond, false)
 
         } else {
             //正向
-            view.scrollToOffset(cc.v2(now_Position.x, now_Position.y + Global.config.exportScrollSpeed), timeSecond, false)
-            // view.setContentPosition(cc.v2(now_Position.x, now_Position.y + 10 ))
+            view.scrollToOffset(v2(now_Position.x, now_Position.y + Global.config.exportScrollSpeed), timeSecond, false)
+            // view.setContentPosition(v2(now_Position.x, now_Position.y + 10 ))
         }
     }
 
-    public static scrollView_auto_horizontal(view: cc.ScrollView, timeSecond: number) {
+    public static scrollView_auto_horizontal(view: ScrollView, timeSecond: number) {
         if (view.isScrolling() || view.isAutoScrolling()) {
             return
         }
@@ -470,11 +481,11 @@ export default class Tools {
 
         if (flag) {
             //反向
-            view.scrollToOffset(cc.v2(-(now_Position.x) - Global.config.exportScrollSpeed, now_Position.y), timeSecond, false)
+            view.scrollToOffset(v2(-(now_Position.x) - Global.config.exportScrollSpeed, now_Position.y), timeSecond, false)
         } else {
             //正向
-            view.scrollToOffset(cc.v2(-(now_Position.x) + Global.config.exportScrollSpeed, now_Position.y), timeSecond, false)
-            // view.setContentPosition(cc.v2(now_Position.x, now_Position.y + 10 ))
+            view.scrollToOffset(v2(-(now_Position.x) + Global.config.exportScrollSpeed, now_Position.y), timeSecond, false)
+            // view.setContentPosition(v2(now_Position.x, now_Position.y + 10 ))
         }
     }
 
@@ -484,36 +495,50 @@ export default class Tools {
      * @param duration
      */
     public static showToast(title, duration = 1500) {
-        WechatApi.systemInterface_do('showToast', null, () => {
-            PanelMgr.INS.openPanel({
-                layer: Layer.gameBoxLayer,
-                panel: ToastTips,
-                param: {title: title, time: duration}
-            })
-        }, {
-            title: title,
-            duration: duration,
-            icon: 'none'
-        })
+        // WechatApi.systemInterface_do('showToast', null, () => {
+        //     PanelMgr.INS.openPanel({
+        //         layer: Layer.gameBoxLayer,
+        //         panel: ToastTips,
+        //         param: {title: title, time: duration}
+        //     })
+        // }, {
+        //     title: title,
+        //     duration: duration,
+        //     icon: 'none'
+        // })
     }
 
     /**
      * 改变节点位置的 y 为 banner 位置的 y (骗点用)
      * @param node
      */
-    public static changeNodePosition(node: cc.Node) {
+    public static changeNodePosition(node: Node) {
         let banner = Game.Ins.banner;
-        node.y = banner.y + banner.height / 2;
+        const bannerUiTransform = banner.getComponent(UITransform);
+        if(!bannerUiTransform){
+            bannerUiTransform.addComponent(UITransform);
+        }
+        const y = banner.position.y + bannerUiTransform.height / 2;
+        node.setPosition(new Vec3(node.position.x,y));
     }
 
     /**
      * 调整按钮位置到 banner上方
      * @param button
      */
-    public static setExportPos(button: cc.Node) {
+    public static setExportPos(button: Node) {
         let banner = Game.Ins.banner;
         this.changeNodePosition(button);
-        button.y = button.y + banner.height / 2 + button.height / 2;
+        const bannerUiTransform = banner.getComponent(UITransform);
+        if(!bannerUiTransform){
+            bannerUiTransform.addComponent(UITransform);
+        }
+        const buttonUiTransform = button.getComponent(UITransform);
+        if(!buttonUiTransform){
+            buttonUiTransform.addComponent(UITransform);
+        }
+        const y = button.position.y + bannerUiTransform.height / 2 + buttonUiTransform.height/2;
+        button.setPosition(new Vec3(button.position.x,y))
     }
 
 
@@ -522,11 +547,20 @@ export default class Tools {
      * @param time
      * @param button
      */
-    public static setExportPos_Animation(time: number, button: cc.Node) {
+    public static setExportPos_Animation(time: number, button: Node) {
         let banner = Game.Ins.banner
         this.changeNodePosition(button);
-        cc.tween(button)
-            .to(time, {y: button.y + banner.height / 2 + button.height / 2}, {easing: "smooth"})
+        const bannerUiTransform = banner.getComponent(UITransform);
+        if(!bannerUiTransform){
+            bannerUiTransform.addComponent(UITransform);
+        }
+        const buttonUiTransform = button.getComponent(UITransform);
+        if(!buttonUiTransform){
+            buttonUiTransform.addComponent(UITransform);
+        }
+        tween(button)
+            .to(time, {position:new Vec3(button.position.x,button.position.y+bannerUiTransform.height/2+buttonUiTransform.height/2)}, {easing: "smooth"})
+            // .to(time, {y: button.y + banner.height / 2 + button.height / 2}, {easing: "smooth"})
             .start();
     }
 
@@ -562,15 +596,15 @@ export default class Tools {
             },
             () => {
                 TestMgr.start("加载SDK")
-                JiuWuSDK.initSDK().then((res: any) => {
-                    if (res.code) {
-                        GameLogMgr.warn(Constant.LOGIN_CODE[res.code]);
-                    }
-                    TestMgr.end("加载SDK")
-                    WechatApi.screenAdv.init();
-                    WechatApi.rewardedVideo.init();
-                    f();
-                });
+                // JiuWuSDK.initSDK().then((res: any) => {
+                //     if (res.code) {
+                //         GameLogMgr.warn(Constant.LOGIN_CODE[res.code]);
+                //     }
+                //     TestMgr.end("加载SDK")
+                //     WechatApi.screenAdv.init();
+                //     WechatApi.rewardedVideo.init();
+                //     f();
+                // });
             },
         ]
 
@@ -584,27 +618,27 @@ export default class Tools {
      * 将关卡数据储存到微信托管中
      */
     public static setUserCloudStorage() {
-        let data = {
-            'wxgame': {
-                'score': CacheMgr.checkpoint,
-                'update_time': new Date().getTime() / 1000
-            }
-        }
-        WechatApi.systemInterface_do('setUserCloudStorage', null, null, {
-            KVDataList: [{key: 'level', value: JSON.stringify(data)}],
-            success: () => {
-                GameLogMgr.log('储存成功 ... ');
-            },
-            fail: (err) => {
-                GameLogMgr.error('储存失败 ... ', err);
-            }
-        });
+        // let data = {
+        //     'wxgame': {
+        //         'score': CacheMgr.checkpoint,
+        //         'update_time': new Date().getTime() / 1000
+        //     }
+        // }
+        // WechatApi.systemInterface_do('setUserCloudStorage', null, null, {
+        //     KVDataList: [{key: 'level', value: JSON.stringify(data)}],
+        //     success: () => {
+        //         GameLogMgr.log('储存成功 ... ');
+        //     },
+        //     fail: (err) => {
+        //         GameLogMgr.error('储存失败 ... ', err);
+        //     }
+        // });
     }
 
     /**
      * 强制到处
      */
-    public static forceExport() {
+    public static forceExport():Promise<void> {
         return new Promise((resolve, reject) => {
             let id: number = 0;
             if (Global.config.box_conf.force_Id.length > 0) {
@@ -640,9 +674,9 @@ export default class Tools {
      * @param data
      */
     public static subToOpenData(data: { key: string, value: any }) {
-        WechatApi.systemInterface_do('getOpenDataContext', (res) => {
-            res.postMessage(data);
-        }, null, null);
+        // WechatApi.systemInterface_do('getOpenDataContext', (res) => {
+        //     res.postMessage(data);
+        // }, null, null);
     }
 
     /**
@@ -650,28 +684,29 @@ export default class Tools {
      */
     public static handleVideo(adType: number) {
         return new Promise((resolve) => {
-            WechatApi.rewardedVideo.show({
-                code: adType,
-                success: (code) => {
-                    switch (code) {
-                        case Constant.REWARDED_VIDEO_END_TYPE.END:
-                            resolve(true);
-                            break;
-                        case Constant.REWARDED_VIDEO_END_TYPE.NOT_END:
-                            resolve(false);
-                            break;
-                        case Constant.REWARDED_VIDEO_END_TYPE.ERROR:
-                            Tools.activeShare();
-                            resolve(true)
-                            break
-                        case Constant.REWARDED_VIDEO_END_TYPE.INSERT_SCREEN:
-                        case Constant.REWARDED_VIDEO_END_TYPE.SHARE:
-                            resolve(true);
-                            break;
-                    }
-                },
-                callObj: this
-            });
+            resolve(true);
+            // WechatApi.rewardedVideo.show({
+            //     code: adType,
+            //     success: (code) => {
+            //         switch (code) {
+            //             case Constant.REWARDED_VIDEO_END_TYPE.END:
+            //                 resolve(true);
+            //                 break;
+            //             case Constant.REWARDED_VIDEO_END_TYPE.NOT_END:
+            //                 resolve(false);
+            //                 break;
+            //             case Constant.REWARDED_VIDEO_END_TYPE.ERROR:
+            //                 Tools.activeShare();
+            //                 resolve(true)
+            //                 break
+            //             case Constant.REWARDED_VIDEO_END_TYPE.INSERT_SCREEN:
+            //             case Constant.REWARDED_VIDEO_END_TYPE.SHARE:
+            //                 resolve(true);
+            //                 break;
+            //         }
+            //     },
+            //     callObj: this
+            // });
         });
     }
 
@@ -681,31 +716,31 @@ export default class Tools {
      * @param draw debug 绘制
      * @param bounding 包围盒
      */
-    public static getCollision(isOpen: boolean = true, draw: boolean = false, bounding: boolean = false) {
-        let Manager = cc.director.getCollisionManager();
-        Manager.enabled = isOpen;
-        Manager.enabledDebugDraw = draw;
-        Manager.enabledDrawBoundingBox = bounding;
-    }
+    // public static getCollision(isOpen: boolean = true, draw: boolean = false, bounding: boolean = false) {
+    //     let Manager = director.getCollisionManager();
+    //     Manager.enabled = isOpen;
+    //     Manager.enabledDebugDraw = draw;
+    //     Manager.enabledDrawBoundingBox = bounding;
+    // }
 
     /**
      * 打开或关闭 物理系统
      * @param isOpen
      * @param draw
      */
-    public static getPhysics(isOpen: boolean = true, draw: boolean = false) {
-        let Manager = cc.director.getPhysicsManager();
-        Manager.enabled = true;
-        if (draw) {
-            cc.director.getPhysicsManager().debugDrawFlags =
-                cc.PhysicsManager.DrawBits.e_aabbBit
-                |
-                cc.PhysicsManager.DrawBits.e_jointBit
-                |
-                cc.PhysicsManager.DrawBits.e_shapeBit
-            ;
-        }
-    }
+    // public static getPhysics(isOpen: boolean = true, draw: boolean = false) {
+    //     let Manager = director.getPhysicsManager();
+    //     Manager.enabled = true;
+    //     if (draw) {
+    //         director.getPhysicsManager().debugDrawFlags =
+    //             PhysicsManager.DrawBits.e_aabbBit
+    //             |
+    //             PhysicsManager.DrawBits.e_jointBit
+    //             |
+    //             PhysicsManager.DrawBits.e_shapeBit
+    //         ;
+    //     }
+    // }
 
     /**
      *  注册一组 touch 事件
@@ -717,18 +752,18 @@ export default class Tools {
      * @param target
      * @param bool
      */
-    public static onTouchAll(node: cc.Node, start: Function, move: Function, end: Function, cancel: Function, target: any, bool: boolean = true) {
+    public static onTouchAll(node: Node, start: Function, move: Function, end: Function, cancel: Function, target: any, bool: boolean = true) {
         if (node) {
             if (bool) {
-                node.on(cc.Node.EventType.TOUCH_START, start, target);
-                node.on(cc.Node.EventType.TOUCH_MOVE, move, target);
-                node.on(cc.Node.EventType.TOUCH_END, end, target);
-                node.on(cc.Node.EventType.TOUCH_CANCEL, cancel, target);
+                node.on(Node.EventType.TOUCH_START, start, target);
+                node.on(Node.EventType.TOUCH_MOVE, move, target);
+                node.on(Node.EventType.TOUCH_END, end, target);
+                node.on(Node.EventType.TOUCH_CANCEL, cancel, target);
             } else {
-                node.off(cc.Node.EventType.TOUCH_START, start, target);
-                node.off(cc.Node.EventType.TOUCH_MOVE, move, target);
-                node.off(cc.Node.EventType.TOUCH_END, end, target);
-                node.off(cc.Node.EventType.TOUCH_CANCEL, cancel, target);
+                node.off(Node.EventType.TOUCH_START, start, target);
+                node.off(Node.EventType.TOUCH_MOVE, move, target);
+                node.off(Node.EventType.TOUCH_END, end, target);
+                node.off(Node.EventType.TOUCH_CANCEL, cancel, target);
             }
         }
     }
@@ -737,7 +772,7 @@ export default class Tools {
      * 获取节点所在父节点的下标
      *  @param node
      */
-    public static getChildrenIndex(node: cc.Node): number {
+    public static getChildrenIndex(node: Node): number {
         let parent = node.parent;
         for (let i = 0; i < parent.children.length; i++) {
             let value = parent.children[i];
@@ -752,8 +787,9 @@ export default class Tools {
      * @param point 位置
      * @param node 节点
      */
-    public static getPointInNode(point: cc.Vec2, node: cc.Node): boolean {
-        return node.getBoundingBoxToWorld().contains(point);
+    public static getPointInNode(point: Vec2, node: Node): boolean {
+        let uitransform = node.getComponent(UITransform);
+        return uitransform.getBoundingBoxToWorld().contains(point);
     }
 
     /**
@@ -807,22 +843,24 @@ export default class Tools {
     /**
      * 获取当前主机地址
      */
-    public static getHost(): string {
-        if (WechatApi.systemInterface == AppApi) {
-            return JiuWuSDK.url.test;
-        } else {
-            return JiuWuSDK.url.host;
-        }
-    }
+    // public static getHost(): string {
+    //     if (WechatApi.systemInterface == AppApi) {
+    //         return JiuWuSDK.url.test;
+    //     } else {
+    //         return JiuWuSDK.url.host;
+    //     }
+    // }
 
     /**
      * 根据一个矩形 ，创建一个节点
      */
-    public static getNodeForRect(rect: cc.Rect): cc.Node {
-        let node = new cc.Node();
-        node.width = rect.width;
-        node.height = rect.height;
-        node.setPosition(cc.v3(rect.center));
+    public static getNodeForRect(rect: math.Rect): Node {
+        let node = new Node();
+        let uitransform = node.getComponent(UITransform);
+        uitransform.width = rect.width;
+        uitransform.height = rect.height;
+
+        node.setPosition(new Vec3(rect.center.x, rect.center.y));
         return node;
     }
 
@@ -830,11 +868,11 @@ export default class Tools {
      * 主动分享
      */
     public static activeShare() {
-        WechatApi.systemInterface_do('shareAppMessage', null, null, {
-            title: Global.config.share.title,
-            imageUrl: Global.config.share.img,
-            query: 'shareMsg = ' + '分享卡片上所带的信息'
-        });
+        // WechatApi.systemInterface_do('shareAppMessage', null, null, {
+        //     title: Global.config.share.title,
+        //     imageUrl: Global.config.share.img,
+        //     query: 'shareMsg = ' + '分享卡片上所带的信息'
+        // });
     }
 
     /**
@@ -842,13 +880,14 @@ export default class Tools {
      * @param node
      */
     //获取一个节点四个点的位置 (未经旋转 这种操作）
-    public static getNodeFourPoint(node: cc.Node) {
-        let anchor = node.getAnchorPoint()
+    public static getNodeFourPoint(node: Node) {
+        let uiTransform = node.getComponent(UITransform);
+        let anchor = uiTransform.anchorPoint;
         return {
-            left_down: cc.v2(node.position.x - anchor.x * node.width, node.position.y - anchor.y * node.height),
-            left_top: cc.v2(node.position.x - anchor.x * node.width, node.position.y + (1 - anchor.y) * node.height),
-            right_down: cc.v2(node.position.x + (1 - anchor.x) * node.width, node.position.y - anchor.y * node.height),
-            right_top: cc.v2(node.position.x + (1 - anchor.x) * node.width, node.position.y + (1 - anchor.y) * node.height)
+            left_down: v2(node.position.x - anchor.x * uiTransform.width, node.position.y - anchor.y * uiTransform.height),
+            left_top: v2(node.position.x - anchor.x * uiTransform.width, node.position.y + (1 - anchor.y) * uiTransform.height),
+            right_down: v2(node.position.x + (1 - anchor.x) * uiTransform.width, node.position.y - anchor.y * uiTransform.height),
+            right_top: v2(node.position.x + (1 - anchor.x) * uiTransform.width, node.position.y + (1 - anchor.y) * uiTransform.height)
         }
     }
 
@@ -882,29 +921,30 @@ export default class Tools {
 
 
     //banner根据节点适配
-    public static getRealSize(node: cc.Node, resize_width = null, resize_height = null): {
+    public static getRealSize(node: Node, resize_width = null, resize_height = null): {
         width: number,
         height: number,
         left: number,
         top: number
     } {
         //获取屏幕设计尺寸
-        let canvas = node.parent
-        let size = canvas.getContentSize()
+        let canvas = node.parent;
+        let uiTransform = canvas.getComponent(UITransform);
+        let size = uiTransform.contentSize;
         let data = Tools.getNodeFourPoint(canvas)
-        let pc = data.left_top.sub(cc.v2(Tools.getNodeFourPoint(node).left_top))
-        let screen = cc.view.getFrameSize();
-        let scaleX = screen.width / size.width
-        let scaleY = screen.height / size.height
+        let pc = data.left_top.subtract(v2(Tools.getNodeFourPoint(node).left_top))
+        let screenSize = screen.windowSize;
+        let scaleX = screenSize.width / size.width
+        let scaleY = screenSize.height / size.height
 
         if (resize_width && resize_height) {
-            node.width = resize_width / scaleX
-            node.height = resize_height / scaleY
+            uiTransform.width = resize_width / scaleX
+            uiTransform.height = resize_height / scaleY
         }
         // console.log("scaleX", scaleX, "scaleY", scaleY)
         return {
-            width: node.width * scaleX,
-            height: node.height * scaleY,
+            width: uiTransform.width * scaleX,
+            height: uiTransform.height * scaleY,
             left: -pc.x * scaleX,
             top: pc.y * scaleY,
         }
@@ -915,8 +955,13 @@ export default class Tools {
         left: number,
         top: number
     } {
+
+
+
+
+
         let customSize = Global.config.adv_unit_conf.customSize
-        let screenSize = cc.view.getFrameSize()
+        let screenSize = screen.windowSize;//view.getFrameSize()
         let left = screenSize.width / 2 - customSize.width / 2
         let top = screenSize.height - customSize.height
         return {

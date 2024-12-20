@@ -1,3 +1,5 @@
+import {sys} from "cc";
+
 /**
  * 本地数据处理
  */
@@ -10,7 +12,7 @@ export default class StorageMgr {
      */
     public static read(key: string) {
         if (key != null) {
-            let result = cc.sys.localStorage.getItem(key);
+            let result = sys.localStorage.getItem(key);
             if (result) {
                 result = JSON.parse(result);
             }
@@ -28,7 +30,7 @@ export default class StorageMgr {
         try {
             GameLog.log('storage save', key, value);
             if (key != null) {
-                return cc.sys.localStorage.setItem(key, JSON.stringify(value));
+                return sys.localStorage.setItem(key, JSON.stringify(value));
             }
         } catch (error) {
             GameLog.error(error);
@@ -39,7 +41,7 @@ export default class StorageMgr {
      * 清空本地数据
      */
     public static clear() {
-        return cc.sys.localStorage.clear();
+        return sys.localStorage.clear();
     }
 
     /**
@@ -48,7 +50,7 @@ export default class StorageMgr {
      */
     public static rm(key: string) {
         if (key != null) {
-            return cc.sys.localStorage.removeItem(key);
+            return sys.localStorage.removeItem(key);
         }
     }
 

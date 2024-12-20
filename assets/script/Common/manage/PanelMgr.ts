@@ -96,7 +96,8 @@ export default class PanelMgr extends Component {
                         panel.active = false
                         // this.scheduleOnce(() => {
                         this.openList.set(urlInfo.name, panel);
-                        (panel.getComponent(LayerPanel)as LayerPanel).initUI()
+                        const layerpanel = panel.getComponent(LayerPanel)as LayerPanel;
+                        layerpanel.initUI()
                         this.showPanel(panel, param.param, config)
                         this.LoadingList.delete(urlInfo.name)
                         if (this.LoadingList.size == 0) {
@@ -168,11 +169,11 @@ export default class PanelMgr extends Component {
             return
         }
 
-        node.getComponent(LayerPanel).hideGameBox()
+        // node.getComponent(LayerPanel).hideGameBox()
 
         node.getComponent(LayerPanel).hide() //这里可以做清除代码
 
-        node.getComponent(LayerPanel).unscheduleAllCallbacks() //取消所有定时器
+        // node.getComponent(LayerPanel).unscheduleAllCallbacks() //取消所有定时器
         if (panel.getUrl().name == "endView") { //如果是endView的化 ，需要同步数据
             CacheMgr.updateData();
         }
@@ -216,11 +217,11 @@ export default class PanelMgr extends Component {
                     }
                 })
             }).then(() => {
-                if (Tools.checkPer(config.banner_probability)) {
-                    WechatApi.bottomAdv.show()
-                } else {
-                    WechatApi.bottomAdv.hide()
-                }
+                // if (Tools.checkPer(config.banner_probability)) {
+                //     WechatApi.bottomAdv.show()
+                // } else {
+                //     WechatApi.bottomAdv.hide()
+                // }
                 if (config.slider > 0) {
                     PanelMgr.INS.openPanel({
                         layer: Layer.sliderLayer,

@@ -1,11 +1,12 @@
 import GameLog from "./GameLogMgr";
 import LoadMgr from "./LoadMgr";
+import {NodePool,Node,instantiate,Prefab} from "cc";
 
 export default class PondMgr {
 
     private static caches: { [key: string]: any } = {};
 
-    private static gamePool: { [key: string]: cc.NodePool } = {};   //对象池？
+    private static gamePool: { [key: string]: NodePool } = {};   //对象池？
 
     /**
      * 新增对象池
@@ -30,14 +31,14 @@ export default class PondMgr {
             return;
         }
 
-        //如果 gamePool 中没有存在 的话 ， 那么就创建一个 cc.Node
+        //如果 gamePool 中没有存在 的话 ， 那么就创建一个 Node
         if (this.gamePool[url] == null) {
-            this.gamePool[url] = new cc.NodePool();
+            this.gamePool[url] = new NodePool();
         }
 
         cnt -= this.gamePool[url].size();
         for (let i = 0; i < cnt; i++) {
-            let item = cc.instantiate(this.caches[url]);
+            let item = instantiate(this.caches[url]);
             this.gamePool[url].put(item);
         }
     }
@@ -45,7 +46,7 @@ export default class PondMgr {
     /**
      * 放回对象池
      */
-    public static putNodeToPool(url: string, item: cc.Node) {
+    public static putNodeToPool(url: string, item: Node) {
         if (item == null || url == "" || url == null) {
             GameLog.warn('putNodeToPool fail', url, item);
             return;
@@ -53,7 +54,7 @@ export default class PondMgr {
 
         //该对象池不存在，重新创建
         if (this.gamePool[url] == null) {
-            this.gamePool[url] = new cc.NodePool();
+            this.gamePool[url] = new NodePool();
         }
         //清空父节点
         item.parent = null;
@@ -63,17 +64,17 @@ export default class PondMgr {
     /**
      * 从对象池中获取一个节点
      */
-    public static getNodeFromPool(url: string): cc.Node {
+    public static getNodeFromPool(url: string): Node {
         let item = null;
         //如果对象池为空，则需要重新创建一下
         if (this.gamePool[url] == null) {
-            this.gamePool[url] = new cc.NodePool();
+            this.gamePool[url] = new NodePool();
         }
         if (this.gamePool[url].size() > 0) {
             item = this.gamePool[url].get(); // 对象池 中如果已经存在这个节点了，直接去除就行
         } else if (this.caches[url]) {
             //没有存在这个节点的话 ，需要根据 caches 创建
-            item = cc.instantiate(this.caches[url]);
+            item = instantiate(this.caches[url]);
         }
         return item;
     }
@@ -95,7 +96,7 @@ export default class PondMgr {
             }
         } else {
             //节点不存在，只能去加载咯 ，芜湖
-            LoadMgr.loadPrefab(url).then((prefab: cc.Prefab) => {
+            LoadMgr.loadPrefab(url).then((prefab: Prefab) => {
                 this.addToCaches(url, prefab);
                 item = this.getNodeFromPool(url);
                 if (callFun) {

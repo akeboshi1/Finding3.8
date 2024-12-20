@@ -1,11 +1,10 @@
+import {_decorator,ScrollView,tween,Node,instantiate,UITransform,Vec3,macro} from "cc";
 import Global from "db://assets/script/Common/Global";
-import WechatGameBox from "db://assets/script/Common/manage/ADV/Wechat/WechatGameBox";
-import WechatApi from "db://assets/script/Common/manage/API/WechatApi";
 import Tools from "db://assets/script/Common/Tools";
 import LayerPanel, {UrlInfo} from "../../Common/manage/Layer/LayerPanel";
 import Constant from "../../Common/Constant";
 
-const {ccclass, property} = cc._decorator;
+const {ccclass, property,integer} = _decorator;
 
 @ccclass
 export default class SliderBox extends LayerPanel {
@@ -17,31 +16,32 @@ export default class SliderBox extends LayerPanel {
         }
     }
 
-    @property(cc.Integer)
+    @property(integer)
     private moveTime: number = 0
-    private btn: cc.Node = null
-    private scrollView: cc.ScrollView = null
-    private content: cc.Node = null
-    private gameBox: WechatGameBox = null
-    private openFlag: boolean = false //默认没有打开
-    private moveFlag: boolean = false
+
+    private btn: Node = null;
+    private scrollView: ScrollView = null;
+    private content: Node = null;
+    // private gameBox: WechatGameBox = null
+    private openFlag: boolean = false; //默认没有打开
+    private moveFlag: boolean = false;
 
     initUI() {
-        this.node.active = false
+        this.node.active = false;
         this.btn = this.getNode("qian")
-        this.scrollView = this.getNode("scrollView").getComponent(cc.ScrollView)
-        this.content = this.scrollView.content
+        this.scrollView = this.getNode("scrollView").getComponent(ScrollView)
+        this.content = this.scrollView.content;
         let itemExam = this.content.children[0]
-        let nodeList: cc.Node [] = []
+        let nodeList: Node [] = []
         for (let i = 0; i < Global.exportInfo.length; i++) {
-            let node = cc.instantiate(itemExam)
+            let node = instantiate(itemExam)
             node.active = true
             this.content.addChild(node)
             nodeList.push(node)
         }
         itemExam.active = false
-        this.gameBox = new WechatApi.gameBox()
-        this.gameBox.init(nodeList, null, Constant.EXPORT_TYPE.GAME_BOX_SLIDER, true, this)
+        // this.gameBox = new WechatApi.gameBox()
+        // this.gameBox.init(nodeList, null, Constant.EXPORT_TYPE.GAME_BOX_SLIDER, true, this)
 
         this.onTouch(this.btn, this.do)
 
@@ -52,17 +52,18 @@ export default class SliderBox extends LayerPanel {
             return
         }
 
-        this.moveFlag = true
+        this.moveFlag = true;
+        let uiTransform = this.node.getComponent(UITransform);
         if (!this.openFlag) { //没打开需要打开
-            cc.tween(this.node)
-                .by(this.moveTime, {x: this.node.width})
+            tween(this.node)
+                .by(this.moveTime, {position: new Vec3(uiTransform.width,this.node.position.y)})
                 .call(() => {
                     this.moveFlag = false
                 })
                 .start()
         } else {
-            cc.tween(this.node)
-                .by(this.moveTime, {x: -this.node.width})
+            tween(this.node)
+                .by(this.moveTime, {position: new Vec3(-uiTransform.width,this.node.position.y)})
                 .call(() => {
                     this.moveFlag = false
                 })
@@ -73,12 +74,14 @@ export default class SliderBox extends LayerPanel {
     }
 
     updateArrows() {
-        this.btn.children[0].scaleX = -this.btn.children[0].scaleX
+        let node = this.btn.children[0];
+        node.scale = new Vec3(-node.scale.x,node.scale.y);
     }
 
     hide() {
         if (this.openFlag) {
-            this.node.x = -this.node.width
+            let uiTransform = this.node.getComponent(UITransform);
+            this.node.setPosition(new Vec3(-uiTransform.width,this.node.position.y));
         }
         this.node.active = false
     }
@@ -93,6 +96,6 @@ export default class SliderBox extends LayerPanel {
         }
         this.schedule(() => {
             Tools.scrollViewOneItem(this.scrollView, "v")
-        }, Global.config.gameBoxMoveInterval, cc.macro.REPEAT_FOREVER)
+        }, Global.config.gameBoxMoveInterval, macro.REPEAT_FOREVER)
     }
 }
