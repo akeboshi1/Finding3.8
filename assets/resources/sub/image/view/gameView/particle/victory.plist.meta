@@ -2,7 +2,7 @@
   "ver": "1.0.2",
   "importer": "particle",
   "imported": true,
-  "uuid": "d20f7e3f-25b5-4580-a634-5fa863ab1297",
+  "uuid": "92704fc5-4b5a-44b1-9838-b0317030ff6e",
   "files": [
     ".json",
     ".plist"
@@ -17,32 +17,16 @@
     "srcBlendFactor": 770,
     "dstBlendFactor": 771,
     "startColor": {
-      "_val": 2740373706,
-      "r": 127,
-      "g": 127,
-      "b": 127,
-      "a": 255
+      "_val": 2740373706
     },
     "startColorVar": {
-      "_val": 3333292005,
-      "r": 255,
-      "g": 255,
-      "b": 255,
-      "a": 255
+      "_val": 3333292005
     },
     "endColor": {
-      "_val": 3591610797,
-      "r": 255,
-      "g": 255,
-      "b": 255,
-      "a": 255
+      "_val": 3591610797
     },
     "endColorVar": {
-      "_val": 3170498923,
-      "r": 255,
-      "g": 255,
-      "b": 255,
-      "a": 255
+      "_val": 3170498923
     },
     "startSize": 28,
     "startSizeVar": 24,
