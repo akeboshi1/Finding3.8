@@ -1,16 +1,13 @@
-import TwoBox from "../Box/TwoBox";
-import OneBox from "../Box/OneBox";
-import ThreeBox from "../Box/ThreeBox";
+
 import LayerPanel, {UrlInfo} from "../../Common/manage/Layer/LayerPanel";
 import Tools from "../../Common/Tools";
 import Global from "../../Common/Global";
-import Emit from "../../Common/manage/Emit/Emit";
-import EmitData from "../../Common/manage/Emit/EmitData";
 import ActionMgr from "../../Common/manage/ActionMgr";
-import WechatApi from "../../Common/manage/API/WechatApi";
 import PanelMgr from "../../Common/manage/PanelMgr";
+import {_decorator,Node,UITransform,Vec3,game,Game,TweenSystem} from "cc";
 
-const {ccclass} = cc._decorator;
+
+const {ccclass} = _decorator;
 @ccclass
 export default class TreaView extends LayerPanel {
     public static getUrl(): UrlInfo {
@@ -20,13 +17,13 @@ export default class TreaView extends LayerPanel {
         }
     }
 
-    private _processBar: cc.Node = null;
+    private _processBar: Node = null;
 
-    private _nodeBtn: cc.Node = null;
+    private _nodeBtn: Node = null;
 
-    private _nodeHalo: cc.Node = null;
+    private _nodeHalo: Node = null;
 
-    private _hand: cc.Node = null;
+    private _hand: Node = null;
 
     private _continueNum: number = 0; //当前连续点击次数
     private _updateNum: number = 0;   // 已经忽略的 update 次数
@@ -42,9 +39,10 @@ export default class TreaView extends LayerPanel {
         this._nodeBtn = this.getNode('table/button');
         // 进度条
         this._processBar = this.getNode('table/bar/mask');
-
-        this._processBar.x = -this._processBar.parent.width / 2;
-        this._processBar.width = 0;
+        let processBarParentUITransform = this._processBar.parent.getComponent(UITransform);
+        let processBarUITransform = this._processBar.getComponent(UITransform);
+        this._processBar.setPosition(new Vec3(-processBarParentUITransform.width / 2,this._processBar.position.y));
+        processBarUITransform.width = 0;
         // 背景光
         this._nodeHalo = this.getNode("table/halo");
 
@@ -62,29 +60,24 @@ export default class TreaView extends LayerPanel {
 
         ActionMgr.moveIn(this._nodeHalo);
 
-        WechatApi.bottomAdv.hide();
-
-        this.scheduleOnce(() => {
-            WechatApi.bottomAdv.hide();
-        }, 0.5);
+        // WechatApi.bottomAdv.hide();
+        //
+        // this.scheduleOnce(() => {
+        //     WechatApi.bottomAdv.hide();
+        // }, 0.5);
 
         this._handData.num = Tools.getRandom(data.continue_click.min, data.continue_click.max);
-        this._handData.width = Math.ceil(this._processBar.parent.width) * Global.config.chest_Config.width;
+        let processBarParentUITransform = this._processBar.parent.getComponent(UITransform);
+        let processBarUITransform = this._processBar.getComponent(UITransform);
+        this._handData.width = Math.ceil(processBarParentUITransform.width) * Global.config.chest_Config.width;
 
         this.onTouch(this._nodeBtn, () => {
             //获取当前宽度 距离目标宽度 的间隔
-            this._processBar.width += (this._handData.width - this._processBar.width) / 3
+            processBarUITransform.width += (this._handData.width - processBarUITransform.width) / 3
             this._continueNum++
             if (this._continueNum >= this._handData.num) {
                 this._continueNum = 0;
-                WechatApi.bottomAdv.show();
-                this.scheduleOnce(() => {
-                    if (!Global.config.chest_Config.force || !WechatApi.bottomAdv.bannerIns.active()) {
-                        PanelMgr.INS.closePanel(TreaView)
-                    } else {
-                        WechatApi.bottomAdv.hide();
-                    }
-                }, 1);
+                PanelMgr.INS.closePanel(TreaView)
             }
             if (Tools.checkPer(50)) {
                 this.getNode('table/box1').active = true;
@@ -97,7 +90,7 @@ export default class TreaView extends LayerPanel {
 
         // 是否强制骗点
         if (Global.config.chest_Config.force) {
-            cc.game.on(cc.game.EVENT_HIDE, () => {
+            game.on(Game.EVENT_HIDE, () => {
                 PanelMgr.INS.closePanel(TreaView)
             });
         }
@@ -111,15 +104,15 @@ export default class TreaView extends LayerPanel {
         } else {
             this._updateNum++
         }
-
-        if (this._processBar.width > 0.1) {
-            this._processBar.width -= this._handData.width * 0.01;
+        let processBarUITransform = this._processBar.getComponent(UITransform);
+        if (processBarUITransform.width > 0.1) {
+            processBarUITransform.width -= this._handData.width * 0.01;
         }
 
     }
 
     public hide() {
-        this._nodeHalo.stopAllActions();
+        TweenSystem.instance.ActionManager.removeAllActionsFromTarget(this._nodeHalo);
         this._param.promise(true);
     }
 }

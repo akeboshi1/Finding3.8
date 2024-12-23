@@ -1,15 +1,13 @@
 import LayerPanel, {UrlInfo} from "../../Common/manage/Layer/LayerPanel";
 import Global from "../../Common/Global";
 import LoadMgr from "../../Common/manage/LoadMgr";
-import WechatApi from "../../Common/manage/API/WechatApi";
 import Constant from "../../Common/Constant";
 import GameLog from "../../Common/manage/GameLogMgr";
 import CacheMgr from "../../Common/manage/CacheMgr";
 import Tools from "../../Common/Tools";
-import url = cc.url;
 import PanelMgr from "../../Common/manage/PanelMgr";
-
-const {ccclass, property} = cc._decorator;
+import {_decorator,Node,Label,Sprite} from "cc";
+const {ccclass, property} = _decorator;
 @ccclass
 export default class ShortageView extends LayerPanel {
     public static getUrl(): UrlInfo {
@@ -20,10 +18,10 @@ export default class ShortageView extends LayerPanel {
     }
 
     //node
-    private _image: cc.Node = null;
-    private _button: cc.Node = null;
-    private _skipButton: cc.Node = null;
-    private _addNum: cc.Node = null
+    private _image: Node = null;
+    private _button: Node = null;
+    private _skipButton: Node = null;
+    private _addNum: Node = null
 
     private callBack: Function = null;  // 玩家领取成功对应的道具 回调
     private price: number = 0; //当前逻辑所需要的消耗数量
@@ -60,7 +58,7 @@ export default class ShortageView extends LayerPanel {
             this.replaceSprite(this._button, type);
 
             let addNum = Global.config.addInfo[type]
-            this._addNum.getComponent(cc.Label).string = "+" + addNum
+            this._addNum.getComponent(Label).string = "+" + addNum
 
             this.onTouch(this._button, () => {
                 Tools.handleVideo(Constant.VIDEO_TYPE.GET_GOLD).then((res) => {
@@ -102,11 +100,11 @@ export default class ShortageView extends LayerPanel {
     }
 
     //替换图片
-    public replaceSprite(node: cc.Node, type: string) {
+    public replaceSprite(node: Node, type: string) {
         if (!node || !type) {
             return;
         }
-        let sprite = node.getComponent(cc.Sprite)
+        let sprite = node.getComponent(Sprite)
         if (!sprite) {
             return;
         }

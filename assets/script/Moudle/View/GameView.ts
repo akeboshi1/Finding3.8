@@ -10,8 +10,9 @@ import EndView from "./EndView";
 import Constant from "../../Common/Constant";
 import ActionMgr from "../../Common/manage/ActionMgr";
 import HomeView from "./HomeView";
+import {_decorator,Sprite,Node,Label,UITransform,Vec3,Rect,instantiate,Prefab,ParticleSystem2D,ParticleAsset,tween,Color,UIOpacity} from "cc";
 
-const {ccclass, property} = cc._decorator;
+const {ccclass, property} = _decorator;
 
 @ccclass
 export default class GameView extends LayerPanel {
@@ -22,39 +23,39 @@ export default class GameView extends LayerPanel {
         }
     }
 
-    private picture1: cc.Node = null;
+    private picture1: Node = null;
 
-    private picture2: cc.Node = null;
+    private picture2: Node = null;
 
-    private pictureList: cc.Node[] = [];
+    private pictureList: Node[] = [];
 
     private frameList = [];
 
-    private errNode: cc.Node = null;
+    private errNode: Node = null;
 
     private resultList = [];
 
-    private resultNode: cc.Node = null;
+    private resultNode: Node = null;
 
-    private countDownLabel: cc.Node = null;
+    private countDownLabel: Node = null;
 
     private countDownTime: number = null;
 
     private countDown = null;
 
-    private progress: cc.Node = null;
+    private progress: Node = null;
 
-    private progressSprite: cc.Sprite = null;
+    private progressSprite: Sprite = null;
 
-    private hintNode: cc.Node = null;
+    private hintNode: Node = null;
 
-    private addTime: cc.Node = null;
+    private addTime: Node = null;
 
     private hintData = null;
 
-    private hintRoundNode1: cc.Node = null;
+    private hintRoundNode1: Node = null;
 
-    private hintRoundNode2: cc.Node = null;
+    private hintRoundNode2: Node = null;
 
     private interval: number = 0;
 
@@ -62,33 +63,33 @@ export default class GameView extends LayerPanel {
 
     private isStartCount: boolean = false;
 
-    private reminderNode: cc.Node = null;
+    private reminderNode: Node = null;
 
-    private handNode: cc.Node = null;
+    private handNode: Node = null;
 
-    private customsNode: cc.Node = null;
+    private customsNode: Node = null;
 
-    private victory: cc.Node = null;
+    private victory: Node = null;
 
-    private backNode: cc.Node = null;
+    private backNode: Node = null;
 
-    private shareNode: cc.Node = null;
+    private shareNode: Node = null;
 
-    private newHandHintNode: cc.Node = null;
+    private newHandHintNode: Node = null;
 
     private clockTime: number = null;
 
-    private plistNode: cc.Node = null;
+    private plistNode: Node = null;
 
     private tempList = [];
 
-    private addTimeCountNode: cc.Node = null;
+    private addTimeCountNode: Node = null;
 
-    private addTimeVideo: cc.Node = null;
+    private addTimeVideo: Node = null;
 
-    private hintCountNode: cc.Node = null;
+    private hintCountNode: Node = null;
 
-    private hintVideoNode: cc.Node = null;
+    private hintVideoNode: Node = null;
 
     private tempCountDown: number = null;
 
@@ -106,11 +107,11 @@ export default class GameView extends LayerPanel {
         this.pictureList.push(this.picture2);
         this.resultNode = this.getNode("resultList");
         this.countDownLabel = this.getNode("countDown/label");
-        this.countDown = this.countDownLabel.getComponent(cc.Label);
+        this.countDown = this.countDownLabel.getComponent(Label);
         this.countDownTime = GameConfig.customTime;
         this.tempCountDown = GameConfig.allTime;
         this.progress = this.getNode("countDown/progress");
-        this.progressSprite = this.progress.getComponent(cc.Sprite);
+        this.progressSprite = this.progress.getComponent(Sprite);
         this.hintNode = this.getNode("hint");
         this.addTime = this.getNode("addTime");
         this.hintCountNode = this.hintNode.getChildByName("count");
@@ -136,30 +137,31 @@ export default class GameView extends LayerPanel {
             customCount = loopLevel;
         }
         LoadMgr.loadBundle_Single("level" + GameConfig.level_order[customCount]).then()
-        this.customsNode.getComponent(cc.Label).string = "第" + checkPoint + "关";
+        this.customsNode.getComponent(Label).string = "第" + checkPoint + "关";
         let bundleName = "level" + GameConfig.level_order[loopLevel - 1]
-        let pictureSprite1 = this.picture1.getComponent(cc.Sprite);
-        let pictureSprite2 = this.picture2.getComponent(cc.Sprite);
+        let pictureSprite1 = this.picture1.getComponent(Sprite);
+        let pictureSprite2 = this.picture2.getComponent(Sprite);
         LoadMgr.loadSprite(pictureSprite1, "bg", LoadMgr.getBundle(bundleName)).then();
         LoadMgr.loadSprite(pictureSprite2, "bg", LoadMgr.getBundle(bundleName)).then();
         let custData = GameConfig.level_data[loopLevel - 1];
         let sizeData = GameConfig.level_data_size[loopLevel - 1];
-        // LoadMgr.loadAtlas("view/gameView/customData/customData").then((alert: cc.SpriteAtlas) => {
+        // LoadMgr.loadAtlas("view/gameView/customData/customData").then((alert: SpriteAtlas) => {
         for (let i = 0; i < custData.length; i++) {
-            let node: cc.Node = new cc.Node()
-            node.scale = 0.91;
-            node.width = sizeData[i].w;
-            node.height = sizeData[i].h;
-            node.setPosition(cc.v2(custData[i]).x, custData[i].y)
-            node.setAnchorPoint(0.5, 0.5);
-            let sprite = node.addComponent(cc.Sprite);
+            let node: Node = new Node()
+            node.setScale(0.91,0.91);
+            let nodeUITransform = node.getComponent(UITransform);
+            nodeUITransform.width = sizeData[i].w;
+            nodeUITransform.height = sizeData[i].h;
+            node.setPosition(custData[i].x, custData[i].y)
+            nodeUITransform.setAnchorPoint(0.5, 0.5);
+            let sprite = node.addComponent(Sprite);
             LoadMgr.loadSprite(sprite, String(i), LoadMgr.getBundle(bundleName)).then()
-            sprite.sizeMode = cc.Sprite.SizeMode.CUSTOM;
+            sprite.sizeMode = Sprite.SizeMode.CUSTOM;
             // let url = loopLevel + "-" + i;
             // let frame = alert.getSpriteFrame(url);
             // sprite.spriteFrame = frame;
             this.picture1.addChild(node);
-            this.frameList.push(node.getBoundingBox());
+            this.frameList.push(nodeUITransform.getBoundingBox());
             this.frameList[i].id = i + 1;
         }
         if (checkPoint == 1) {
@@ -175,7 +177,7 @@ export default class GameView extends LayerPanel {
         this.onTouch(this.addTime, () => {
             this.clickAddTime();
         })
-        for (let j = 0; j < this.resultNode.childrenCount; j++) {
+        for (let j = 0; j < this.resultNode.children.length; j++) {
             let children = this.resultNode.children[j].getChildByName("right")
             children.active = false;
         }
@@ -208,7 +210,7 @@ export default class GameView extends LayerPanel {
         } else {
             this.addTimeVideo.active = false;
             this.addTimeCountNode.active = true;
-            let label = this.addTimeCountNode.getChildByName("label").getComponent(cc.Label);
+            let label = this.addTimeCountNode.getChildByName("label").getComponent(Label);
             label.string = time + "";
         }
         if (hint <= 0) {
@@ -217,7 +219,7 @@ export default class GameView extends LayerPanel {
         } else {
             this.hintVideoNode.active = false;
             this.hintCountNode.active = true;
-            let label = this.hintCountNode.getChildByName("label").getComponent(cc.Label);
+            let label = this.hintCountNode.getChildByName("label").getComponent(Label);
             label.string = hint + "";
         }
     }
@@ -341,18 +343,18 @@ export default class GameView extends LayerPanel {
                 this.hintRoundNode1 = this.createRound(i, j, url, 120);
             } else {
                 this.hintRoundNode2 = this.createRound(i, j, url, 120);
-                let node = new cc.Node();
+                let node = new Node();
                 node.name = "hand";
-                node.width = 90;
-                node.height = 90;
-                node.setAnchorPoint(0.5, 0.5)
+                let nodeUITransform = node.getComponent(UITransform);
+                nodeUITransform.width = 90;
+                nodeUITransform.height = 90;
+                nodeUITransform.setAnchorPoint(0.5, 0.5)
                 node.angle = 90;
-                let sprite: cc.Sprite = node.addComponent(cc.Sprite);
-                sprite.sizeMode = cc.Sprite.SizeMode.CUSTOM;
+                let sprite: Sprite = node.addComponent(Sprite);
+                sprite.sizeMode = Sprite.SizeMode.CUSTOM;
                 LoadMgr.loadSprite(sprite, "view/gameView/public/hand").then();
                 this.hintRoundNode2.addChild(node);
-                node.x += node.width / 2;
-                node.y -= node.height / 2;
+                node.setPosition(new Vec3(node.position.x+nodeUITransform.width/2,node.position.y-nodeUITransform.height/2));
                 // node.y -= node.width / 2;
                 // node.x += node.height;
                 this.handNode = node;
@@ -361,15 +363,16 @@ export default class GameView extends LayerPanel {
     }
 
     public monitorEvent() {
-        this.picture1.on(cc.Node.EventType.TOUCH_START, this.onTouchDown, this);
-        this.picture2.on(cc.Node.EventType.TOUCH_START, this.onTouchDown, this);
+        this.picture1.on(Node.EventType.TOUCH_START, this.onTouchDown, this);
+        this.picture2.on(Node.EventType.TOUCH_START, this.onTouchDown, this);
     }
 
-    public onTouchDown(event: cc.Event.EventTouch) {
+    public onTouchDown(event) {
         let clickPos = event.getLocation();
-        let target: cc.Node = event.target;
-        let nodePos = target.convertToNodeSpaceAR(clickPos);
-        let rect = new cc.Rect(nodePos.x, nodePos.y, GameConfig.checkArea, GameConfig.checkArea);
+        let target: Node = event.target;
+        let targetUITransform = target.getComponent(UITransform);
+        let nodePos = targetUITransform.convertToNodeSpaceAR(clickPos);
+        let rect = new Rect(nodePos.x, nodePos.y, GameConfig.checkArea, GameConfig.checkArea);
         rect.x -= GameConfig.checkArea / 2;
         rect.y -= GameConfig.checkArea / 2;
         let isRight: boolean = false;
@@ -452,8 +455,8 @@ export default class GameView extends LayerPanel {
             this.reminderNode.destroy();
             this.reminderNode = null;
         }
-        LoadMgr.loadPrefab(GameConfig.prefabData[this.hintIndex]).then((prefab: cc.Prefab) => {
-            let node = cc.instantiate(prefab);
+        LoadMgr.loadPrefab(GameConfig.prefabData[this.hintIndex]).then((prefab: Prefab) => {
+            let node = instantiate(prefab);
             this.node.addChild(node);
             let script = node.getComponent(HintPrefab);
             script.playSound(GameConfig.soundData[this.hintIndex]);
@@ -470,22 +473,24 @@ export default class GameView extends LayerPanel {
             this.plistNode.active = true;
             AudioMgr.play("view/game/sahua").then();
         }
-        let resultNode = this.resultNode.children[result - 1]
+        let resultNode = this.resultNode.children[result - 1];
+        let resultParentNodeUITransform = resultNode.parent.getComponent(UITransform);
+        let nodeUITransform = this.node.getComponent(UITransform);
         let resultPos = resultNode.getPosition();
-        let resultWorldPos = resultNode.parent.convertToWorldSpaceAR(resultPos);
-        let targetNodePos = this.node.convertToNodeSpaceAR(resultWorldPos);
-        let pos = this.node.convertToNodeSpaceAR(clickPos);
-        let node = new cc.Node();
+        let resultWorldPos = resultParentNodeUITransform.convertToWorldSpaceAR(resultPos);
+        let targetNodePos = nodeUITransform.convertToNodeSpaceAR(resultWorldPos);
+        let pos = nodeUITransform.convertToNodeSpaceAR(clickPos);
+        let node = new Node();
         node.name = "particle";
         node.setPosition(pos);
-        let particleComp: cc.ParticleSystem = node.addComponent(cc.ParticleSystem);
+        let particleComp: ParticleSystem2D = node.addComponent(ParticleSystem2D);
         let particleUrl = "view/gameView/particle/win";
-        LoadMgr.loadParticle(particleUrl).then((particle: cc.ParticleAsset) => {
+        LoadMgr.loadParticle(particleUrl).then((particle: ParticleAsset) => {
             particleComp.file = particle;
         })
         this.node.addChild(node);
-        cc.tween(node)
-            .to(0.5, {x: targetNodePos.x, y: targetNodePos.y})
+        tween(node)
+            .to(0.5, {position:new Vec3(targetNodePos.x,targetNodePos.y)})
             .call(() => {
                 let children = resultNode.getChildByName("right")
                 children.active = true;
@@ -503,16 +508,17 @@ export default class GameView extends LayerPanel {
 
 
     public createRound(index1, index2, url, dia) {
-        let node: cc.Node = new cc.Node();
-        node.width = dia;
-        node.height = dia;
+        let node: Node = new Node();
+        let nodeUITransform = node.getComponent(UITransform);
+        nodeUITransform.width = dia;
+        nodeUITransform.height = dia;
         //矩形是从左下角为锚点
         let diffX = this.frameList[index1].width / 2;
         let diffY = this.frameList[index1].height / 2;
         node.setPosition(this.frameList[index1].x + diffX, this.frameList[index1].y + diffY)
-        node.setAnchorPoint(0.5, 0.5)
-        let sprite: cc.Sprite = node.addComponent(cc.Sprite);
-        sprite.sizeMode = cc.Sprite.SizeMode.CUSTOM;
+        nodeUITransform.setAnchorPoint(0.5, 0.5)
+        let sprite: Sprite = node.addComponent(Sprite);
+        sprite.sizeMode = Sprite.SizeMode.CUSTOM;
         LoadMgr.loadSprite(sprite, url).then();
         this.pictureList[index2].addChild(node);
         return node;
@@ -523,35 +529,44 @@ export default class GameView extends LayerPanel {
         this.interval = 0;
         this.hintIndex = 0;
         AudioMgr.play("view/game/err", 1, false).then();
-        let node: cc.Node = new cc.Node;
-        node.width = 60;
-        node.height = 60;
-        let gameViewPos = this.node.convertToNodeSpaceAR(clickPos);
+        let node: Node = new Node;
+        let nodeUITransform = node.getComponent(UITransform);
+        nodeUITransform.width = 60;
+        nodeUITransform.height = 60;
+        let gameViewPos = this.node.getComponent(UITransform).convertToNodeSpaceAR(clickPos);
         node.setPosition(gameViewPos);
-        node.setAnchorPoint(0.5, 0.5);
-        let sprite: cc.Sprite = node.addComponent(cc.Sprite);
-        sprite.sizeMode = cc.Sprite.SizeMode.CUSTOM;
+        nodeUITransform.setAnchorPoint(0.5, 0.5);
+        let sprite: Sprite = node.addComponent(Sprite);
+        sprite.sizeMode = Sprite.SizeMode.CUSTOM;
         LoadMgr.loadSprite(sprite, "view/gameView/public/err");
         this.node.addChild(node);
         this.errNode = node;
-        cc.tween(node)
+        let opacityComponent = node.getComponent(UIOpacity);
+        if(!opacityComponent){
+            opacityComponent = node.addComponent(UIOpacity);
+        }
+        tween(opacityComponent)
             .to(1.5, {opacity: 0})
             .call(() => {
                 node.destroy();
             })
             .start()
-        let count: cc.Node = new cc.Node;
+        let count: Node = new Node;
         count.setPosition(gameViewPos);
-        count.setAnchorPoint(0.5, 0.5);
-        count.color = new cc.Color(255, 0, 0, 255);
-        let str = count.addComponent(cc.Label);
+        let countTransform = count.getComponent(UITransform);
+        countTransform.setAnchorPoint(0.5, 0.5);
+        let countSprite = count.getComponent(Sprite);
+        countSprite.color = new Color(255, 0, 0, 255);
+        let str = count.addComponent(Label);
         str.string = "-10";
         str.fontSize = 40;
         this.node.addChild(count);
-        let resultPos = this.countDownLabel.convertToWorldSpaceAR(this.countDownLabel.getPosition());
-        let nodePos = count.parent.convertToNodeSpaceAR(resultPos);
-        cc.tween(count)
-            .to(1, {x: nodePos.x, y: nodePos.y})
+        let countDownLabelUITransform = this.countDownLabel.getComponent(UITransform);
+        let resultPos = countDownLabelUITransform.convertToWorldSpaceAR(this.countDownLabel.getPosition());
+        let countParentUITransform = count.parent.getComponent(UITransform);
+        let nodePos = countParentUITransform.convertToNodeSpaceAR(resultPos);
+        tween(count)
+            .to(1, {position:new Vec3(nodePos.x,nodePos.y)})
             .call(() => {
                 count.destroy();
                 this.countDownTime -= 10;
@@ -560,7 +575,7 @@ export default class GameView extends LayerPanel {
     }
 
     public checkResult() {
-        if (this.resultList.length == this.resultNode.childrenCount) {
+        if (this.resultList.length == this.resultNode.children.length) {
             this.closeGame(true);
             this.gameOver = true;
         }

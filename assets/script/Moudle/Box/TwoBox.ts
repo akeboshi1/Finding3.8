@@ -1,4 +1,4 @@
-import {_decorator,Node,SpriteFrame,ScrollView,instantiate,Sprite,macro} from "cc";
+import {_decorator,Node,SpriteFrame,ScrollView,instantiate,Sprite,macro,UITransform,rect,UIOpacity} from "cc";
 import LayerPanel, {UrlInfo} from "../../Common/manage/Layer/LayerPanel";
 import Global from "../../Common/Global";
 import Tools from "../../Common/Tools";
@@ -92,18 +92,18 @@ export default class TwoBox extends LayerPanel {
 
     update(dt) {
 
-
-
-
-
-        let viewPos = this.view.parent.convertToWorldSpaceAR(this.view.getPosition());
-        let viewBox = rect(viewPos.x - this.view.width / 2, viewPos.y - this.view.height / 2, this.view.width, this.view.height);
+        let viewParentUiTransform = this.view.parent.getComponent(UITransform);
+        let viewPos = viewParentUiTransform.convertToWorldSpaceAR(this.view.getPosition());
+        let viewUiTransform = this.view.getComponent(UITransform);
+        let viewBox = rect(viewPos.x - viewUiTransform.width / 2, viewPos.y - viewUiTransform.height / 2, viewUiTransform.width, viewUiTransform.height);
         for (let i = 0; i < this.content.children.length; i++) {
             let list = this.content.children;
-            if (viewBox.intersects(list[i].getBoundingBoxToWorld())) {
-                list[i].opacity = 255;
+            let opacityComponent = list[i].getComponent(UIOpacity);
+            let uitransform = list[i].getComponent(UITransform);
+            if (viewBox.intersects(uitransform.getBoundingBoxToWorld())) {
+                opacityComponent.opacity = 255;
             } else {
-                list[i].opacity = 0;
+                opacityComponent.opacity = 0;
             }
         }
     }

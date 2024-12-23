@@ -1,10 +1,11 @@
+import {_decorator,Node,Label} from "cc";
 import CacheMgr from "../../Common/manage/CacheMgr";
 import LayerPanel, {UrlInfo} from "../../Common/manage/Layer/LayerPanel";
 import Global from "../../Common/Global";
 import ShortageView from "./ShortageView";
 import PanelMgr, {Layer} from "../../Common/manage/PanelMgr";
 
-const {ccclass} = cc._decorator;
+const {ccclass} = _decorator;
 
 @ccclass
 export default class GameInfoView extends LayerPanel {
@@ -16,17 +17,17 @@ export default class GameInfoView extends LayerPanel {
         }
     }
 
-    private gold: cc.Node = null;
+    private gold: Node = null;
 
-    private stamina: cc.Node = null;
+    private stamina: Node = null;
 
-    private diamond: cc.Node = null;
+    private diamond: Node = null;
 
-    private gold_add_button: cc.Node = null;
-    private stamina_add_button: cc.Node = null;
+    private gold_add_button: Node = null;
+    private stamina_add_button: Node = null;
 
-    private residue_node: cc.Node = null;
-    private residue_sprite: cc.Node = null;
+    private residue_node: Node = null;
+    private residue_sprite: Node = null;
 
     private animationTime: number = null;
     private gold_num: number = null;
@@ -61,9 +62,9 @@ export default class GameInfoView extends LayerPanel {
     }
 
     show(param: any): void {
-        this.gold.getComponent(cc.Label).string = this.gold_num.toString();
+        this.gold.getComponent(Label).string = this.gold_num.toString();
 
-        this.stamina.getComponent(cc.Label).string = this.stamina_num.toString();
+        this.stamina.getComponent(Label).string = this.stamina_num.toString();
 
         this.onTouch(this.gold_add_button, () => {
             PanelMgr.INS.openPanel({
@@ -115,8 +116,23 @@ export default class GameInfoView extends LayerPanel {
         }
         this.residue_sprite.active = false;
         this.residue_node.active = true;
-        this.residue_node.getComponent(cc.Label).string = this.stamina_minute.toString().padStart(2, "0") + ":" + this.stamina_second.toString().padStart(2, "0");
+        this.residue_node.getComponent(Label).string = this.customPadStart(this.stamina_minute.toString(),2, "0") + ":" + this.customPadStart(this.stamina_second.toString(),2, "0");
     }
+
+
+    private customPadStart(str, targetLength, padString) {
+        str = String(str); // 将输入转换为字符串
+        padString = String(padString || ' '); // 默认使用空格填充
+
+        if (str.length >= targetLength) {
+            return str;
+        } else {
+            const padding = padString.repeat(targetLength - str.length).slice(0, targetLength - str.length);
+            return padding + str;
+        }
+    }
+
+
 
     public changeResidue(minute: number, second: number) {
         this.stamina_minute = minute;
@@ -140,13 +156,13 @@ export default class GameInfoView extends LayerPanel {
             if (num < 0) {
                 let arr = this.timeouts.get(type);
                 arr[i] = window.setTimeout(() => {
-                    this[type].getComponent(cc.Label).string = (num_ - i).toString();
+                    this[type].getComponent(Label).string = (num_ - i).toString();
                 }, allTime * 1000);
                 allTime += time;
             } else {
                 let arr = this.timeouts.get(type);
                 arr[i] = window.setTimeout(() => {
-                    this[type].getComponent(cc.Label).string = (num_ + i).toString();
+                    this[type].getComponent(Label).string = (num_ + i).toString();
                 }, allTime * 1000);
                 allTime += time;
             }
@@ -166,7 +182,7 @@ export default class GameInfoView extends LayerPanel {
                 window.clearTimeout(timeouts[i]);
             }
         }
-        this[type].getComponent(cc.Label).string = this[type + "_num"].toString();   //直接赋值
+        this[type].getComponent(Label).string = this[type + "_num"].toString();   //直接赋值
         this.timeouts.set(type, []);
     }
 }

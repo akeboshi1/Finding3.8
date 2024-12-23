@@ -1,22 +1,23 @@
+import {_decorator,Node,Label,tween,Vec3} from "cc";
 import LayerUI from "../../Common/manage/Layer/LayerUI";
 import CacheMgr from "../../Common/manage/CacheMgr";
 import Tools from "../../Common/Tools";
 import Constant from "../../Common/Constant";
 import GameConfig from "./GameConfig";
 
-const {ccclass, property} = cc._decorator;
+const {ccclass, property} = _decorator;
 
 @ccclass
 export default class NewClass extends LayerUI {
-    private closeNode: cc.Node = null;
+    private closeNode: Node = null;
 
-    private layoutNode: cc.Node = null;
+    private layoutNode: Node = null;
 
-    private getAwardNode: cc.Node = null;
+    private getAwardNode: Node = null;
 
-    private doubleNode: cc.Node = null;
+    private doubleNode: Node = null;
 
-    private bodyNode: cc.Node = null;
+    private bodyNode: Node = null;
 
     onLoad() {
         this.bodyNode = this.getNode("body")
@@ -43,12 +44,12 @@ export default class NewClass extends LayerUI {
         let currTimeStamp = new Date(new Date().toLocaleDateString()).getTime();
         this.layoutNode.children.forEach((node, index) => {
             if (index <= GameConfig.signInData.length - 1) {
-                let countLabel: cc.Label = node.getChildByName("count").getComponent(cc.Label);
+                let countLabel: Label = node.getChildByName("count").getComponent(Label);
                 countLabel.string = "X"+GameConfig.signInData[index];
             }
-            let canNode: cc.Node = node.getChildByName("can");
+            let canNode: Node = node.getChildByName("can");
             canNode.active = false;
-            let overNode: cc.Node = node.getChildByName("over");
+            let overNode: Node = node.getChildByName("over");
             if (currDay <= index) {
                 overNode.active = false;
             } else {
@@ -123,15 +124,15 @@ export default class NewClass extends LayerUI {
     }
 
     public startAnimation() {
-        this.bodyNode.scale = 0;
-        cc.tween(this.bodyNode)
-            .to(0.5, {scale: 1}, {easing: "backInOut"})
+        this.bodyNode.setScale(0,0);
+        tween(this.bodyNode)
+            .to(0.5, {scale: new Vec3(1,1,1)}, {easing: "backInOut"})
             .start()
     }
 
     public closeSignIn() {
-        cc.tween(this.bodyNode)
-            .to(0.5, {scale: 0}, {easing: "backInOut"})
+        tween(this.bodyNode)
+            .to(0.5, {scale: new Vec3(0,0,0)}, {easing: "backInOut"})
             .call(() => {
                 this.node.destroy();
             })

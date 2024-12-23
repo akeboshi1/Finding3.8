@@ -1,15 +1,16 @@
+import {_decorator,Node,Label,tween,Vec3} from "cc";
 import LayerUI from "../../Common/manage/Layer/LayerUI";
 import Tools from "../../Common/Tools";
 import CacheMgr from "../../Common/manage/CacheMgr";
 import GameConfig from "./GameConfig";
 
-const {ccclass, property} = cc._decorator;
+const {ccclass, property} = _decorator;
 
 @ccclass
 export default class Shop extends LayerUI {
-    private contentNode: cc.Node = null;
+    private contentNode: Node = null;
 
-    private closeNode: cc.Node = null;
+    private closeNode: Node = null;
 
     onLoad() {
         this.contentNode = this.getNode("content");
@@ -24,8 +25,8 @@ export default class Shop extends LayerUI {
 
     public initShop() {
         this.contentNode.children.forEach((node, index) => {
-            let btn_buy: cc.Node = node.getChildByName("btn_buy")
-            let butCount: cc.Label = btn_buy.getChildByName("count").getComponent(cc.Label);
+            let btn_buy: Node = node.getChildByName("btn_buy")
+            let butCount: Label = btn_buy.getChildByName("count").getComponent(Label);
             butCount.string = GameConfig.shop_price[index] + "";
             this.onTouch(btn_buy, () => {
                 this.handler_buy(index)
@@ -57,15 +58,15 @@ export default class Shop extends LayerUI {
     }
 
     public startAnimation() {
-        this.node.scale = 0;
-        cc.tween(this.node)
-            .to(0.5, {scale: 1}, {easing: "backInOut"})
+        this.node.setScale(0,0);
+        tween(this.node)
+            .to(0.5, {scale: new Vec3(1,1,1)}, {easing: "backInOut"})
             .start()
     }
 
     public closeShop() {
-        cc.tween(this.node)
-            .to(0.5, {scale: 0}, {easing: "backInOut"})
+        tween(this.node)
+            .to(0.5, {scale: new Vec3(0,0,0)}, {easing: "backInOut"})
             .call(() => {
                 this.node.destroy();
             })

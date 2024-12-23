@@ -6,8 +6,9 @@ import LoadMgr from "../../Common/manage/LoadMgr";
 import Tools from "../../Common/Tools";
 import CacheMgr from "../../Common/manage/CacheMgr";
 import GameConfig from "../Game/GameConfig";
+import {_decorator,Node,instantiate,Prefab,Sprite} from "cc";
 
-const {ccclass} = cc._decorator;
+const {ccclass} = _decorator;
 @ccclass
 export default class HomeView extends LayerPanel {
     public static getUrl(): UrlInfo {
@@ -17,13 +18,13 @@ export default class HomeView extends LayerPanel {
         }
     }
 
-    private btn_setting: cc.Node = null;
+    private btn_setting: Node = null;
 
-    private btn_shop: cc.Node = null;
+    private btn_shop: Node = null;
 
-    private btn_signIn: cc.Node = null;
+    private btn_signIn: Node = null;
 
-    private pictureNode: cc.Node = null;
+    private pictureNode: Node = null;
 
     private beClick: boolean = false;
 
@@ -41,20 +42,20 @@ export default class HomeView extends LayerPanel {
 
     show(param: any): void {
         this.onTouch(this.btn_setting, () => {
-            LoadMgr.loadPrefab("game/settingBox").then((prefab: cc.Prefab) => {
-                let node: cc.Node = cc.instantiate(prefab);
+            LoadMgr.loadPrefab("game/settingBox").then((prefab: Prefab) => {
+                let node: Node = instantiate(prefab);
                 this.node.addChild(node);
             })
         })
         this.onTouch(this.btn_shop, () => {
-            LoadMgr.loadPrefab("game/shop").then((prefab: cc.Prefab) => {
-                let node: cc.Node = cc.instantiate(prefab);
+            LoadMgr.loadPrefab("game/shop").then((prefab: Prefab) => {
+                let node: Node = instantiate(prefab);
                 this.node.addChild(node);
             })
         })
         this.onTouch(this.btn_signIn, () => {
-            LoadMgr.loadPrefab("game/signIn").then((prefab: cc.Prefab) => {
-                let node: cc.Node = cc.instantiate(prefab);
+            LoadMgr.loadPrefab("game/signIn").then((prefab: Prefab) => {
+                let node: Node = instantiate(prefab);
                 this.node.addChild(node);
             })
         })
@@ -66,8 +67,8 @@ export default class HomeView extends LayerPanel {
         let loopLevel = checkPoint % GameConfig.allCheckPoint;
         if (loopLevel == 0) loopLevel = GameConfig.allCheckPoint;
         let custom = GameConfig.level_order[loopLevel - 1]
-        let pictureSprite = this.pictureNode.getComponent(cc.Sprite);
-        pictureSprite.sizeMode = cc.Sprite.SizeMode.CUSTOM;
+        let pictureSprite = this.pictureNode.getComponent(Sprite);
+        pictureSprite.sizeMode = Sprite.SizeMode.CUSTOM;
         let way = () => {
             let url = "bg"
             LoadMgr.loadSprite(pictureSprite, url, LoadMgr.getBundle("level" + custom)).then();

@@ -1,14 +1,15 @@
+import {_decorator,Node,tween,Vec3} from "cc";
 import CacheMgr from "../../Common/manage/CacheMgr";
 import AudioMgr from "../../Common/manage/AudioMgr";
 import LayerUI from "../../Common/manage/Layer/LayerUI";
 
-const {ccclass} = cc._decorator;
+const {ccclass} = _decorator;
 
 @ccclass
 export default class SettingBox extends LayerUI {
 
-    private music: cc.Node = null;
-    private audio: cc.Node = null;
+    private music: Node = null;
+    private audio: Node = null;
     private data: any = null;
 
     onLoad(): void {
@@ -19,14 +20,14 @@ export default class SettingBox extends LayerUI {
     }
 
     public startAnimation(){
-        this.node.scale = 0;
-        cc.tween(this.node)
-            .to(0.5, {scale: 1}, {easing: "backInOut"})
+        this.node.setScale(0,0);
+        tween(this.node)
+            .to(0.5, {scale: new Vec3(1,1,1)}, {easing: "backInOut"})
             .start()
     }
 
     start() {
-        this.getNode('container').children.forEach((node: cc.Node) => {
+        this.getNode('container').children.forEach((node: Node) => {
             let name = node.name;
             let value = this.data[name];
 
@@ -58,8 +59,8 @@ export default class SettingBox extends LayerUI {
         });
 
         this.onTouch(this.getNode('close'), () => {
-            cc.tween(this.node)
-                .to(0.5, {scale: 0}, {easing: "backInOut"})
+            tween(this.node)
+                .to(0.5, {scale: new Vec3(0,0,0)}, {easing: "backInOut"})
                 .call(() => {
                     this.node.destroy()
                 })
