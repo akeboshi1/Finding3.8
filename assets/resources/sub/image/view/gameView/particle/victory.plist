@@ -102,8 +102,6 @@
     <integer>600</integer>
     <key>tangentialAcceleration</key>
     <integer>20</integer>
-    <key>spriteFrameUuid</key>
-    <string>ba7a0b76-2f7f-4af7-8ce2-3fff6f13b247</string>
     <key>positionType</key>
     <integer>1</integer>
     <key>rotationIsDir</key>

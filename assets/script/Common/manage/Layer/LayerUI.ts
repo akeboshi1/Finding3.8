@@ -74,7 +74,7 @@ export default class LayerUI extends Component {
             isGray = this._enableList[target.name].isGray;
         }
 
-        this.setInteractable(target, enabled, isGray);
+        this.setInteractable(target, enabled, false);
 
         let callObj = this;
         let touchHandler = (event) => {

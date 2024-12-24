@@ -152,7 +152,7 @@ export default class GameView extends LayerPanel {
             // node.setScale(0.91,0.91);
             nodeUITransform.width = sizeData[i].w;
             nodeUITransform.height = sizeData[i].h;
-            node.setPosition(custData[i].x, custData[i].y)
+            node.setPosition(custData[i].x*1.5, custData[i].y*1.5)
             nodeUITransform.setAnchorPoint(0.5, 0.5);
             let sprite = node.addComponent(Sprite);
             LoadMgr.loadSprite(sprite, bundleName+"/image/"+String(i)).then()
