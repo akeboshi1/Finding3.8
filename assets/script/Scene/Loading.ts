@@ -29,13 +29,13 @@ export default class Loading extends Component {
             .start();
         let i = 0;
 
-        director.preloadScene("Game")
+        director.preloadScene("Game");
         LoadMgr.init_bundleMgr()
 
         TestMgr.start("加载总时长")
         let num = Tools.model_initModel(() => {
-            i++
-            if (i === num) {
+            // i++
+            // if (i === num) {
                 TestMgr.end("加载总时长")
                 this.tween.stop();
                 tween(this.mask)
@@ -44,7 +44,7 @@ export default class Loading extends Component {
                         director.loadScene('Game');
                     })
                     .start();
-            }
+            // }
         });
     }
 

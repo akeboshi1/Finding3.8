@@ -16,21 +16,21 @@ export default class EndView extends LayerPanel {
     public static getUrl(): UrlInfo {
         return {
             bundle: "endView",
-            name: "endView"
+            name: "View/endView/prefab/endView"
         }
     }
 
     private result: boolean = null;
 
-    private coinNode: Node = null;
+    // private coinNode: Node = null;
     private btn1Node: Node = null;
     private btn2Node: Node = null;
     private btn2Sprite: Sprite = null;
     private winCoin: number = 0;
 
-    private coinPool: NodePool = null;
-
-    private coinPrefab: Prefab = null;
+    // private coinPool: NodePool = null;
+    //
+    // private coinPrefab: Prefab = null;
 
     private startPos: Vec3 = null;
     private endPos: Vec3 = null;
@@ -47,17 +47,17 @@ export default class EndView extends LayerPanel {
     }
 
     initUI() {
-        this.coinNode = this.getNode("result/coin");
+        //this.coinNode = this.getNode("result/coin");
         this.btn1Node = this.getNode("result/btn1");
         this.btn2Node = this.getNode("result/btn2");
         this.loseTitle = this.getNode("result/title")
         this.btn2Sprite = this.btn2Node.getComponent(Sprite);
-        this.effectNode = this.getNode("particle");
+        this.effectNode = this.getNode("result/particle");
         this.effectNode.active = false;
-        this.coinPool = new NodePool();
-        LoadMgr.loadPrefab("game/coin").then((prefab: Prefab) => {
-            this.coinPrefab = prefab;
-        })
+        //this.coinPool = new NodePool();
+        // LoadMgr.loadPrefab("sub/prefab/game/coin").then((prefab: Prefab) => {
+        //     this.coinPrefab = prefab;
+        // })
     }
 
     show(param: any): void {
@@ -73,47 +73,47 @@ export default class EndView extends LayerPanel {
         this.initEnd();
     }
 
-    public initPool(count: number = 20) {
-        for (let i = 0; i < count; i++) {
-            let coin = instantiate(this.coinPrefab);
-            this.coinPool.put(coin);
-        }
-    }
+    // public initPool(count: number = 20) {
+    //     for (let i = 0; i < count; i++) {
+    //         let coin = instantiate(this.coinPrefab);
+    //         this.coinPool.put(coin);
+    //     }
+    // }
 
     public initEnd() {
         if (this.result) {
-            this.coinNode.active = true;
+            //this.coinNode.active = true;
             this.loseTitle.active = false;
-            let coinLabel: Label = this.coinNode.getChildByName("count").getComponent(Label);
+            //let coinLabel: Label = this.coinNode.getChildByName("count").getComponent(Label);
             this.winCoin = Math.ceil(this.residueTime);
             Tools.changeGold(this.winCoin)
-            let coinPos = this.coinNode.getPosition();
+            //let coinPos = this.coinNode.getPosition();
             let scene = director.getScene();
             let gameInfoView = scene.children[0].getChildByName("gameInfoLayer");
             let selfCoin = gameInfoView.getChildByName("gameInfoView").getChildByName("gold");
-            let coinParentUITransform = this.coinNode.parent.getComponent(UITransform);
-            let coinWorldPos = coinParentUITransform.convertToWorldSpaceAR(coinPos);
-            let coinUITransform = this.node.getComponent(UITransform);
-            let coinNodePos = coinUITransform.convertToNodeSpaceAR(coinWorldPos);
-            let selfCoinNodePos = selfCoin.getPosition()
-            this.startPos = coinNodePos;
-            this.endPos = selfCoinNodePos;
-            this.scheduleOnce(() => {
-                this.flyCoin(coinNodePos, selfCoinNodePos);
-            }, 0.5)
-            coinLabel.string = this.winCoin + "";
-            LoadMgr.loadSprite(this.btn2Sprite, "view/endView/btn_no").then();
+            // let coinParentUITransform = this.coinNode.parent.getComponent(UITransform);
+            // let coinWorldPos = coinParentUITransform.convertToWorldSpaceAR(coinPos);
+            // let coinUITransform = this.node.getComponent(UITransform);
+            // let coinNodePos = coinUITransform.convertToNodeSpaceAR(coinWorldPos);
+            // let selfCoinNodePos = selfCoin.getPosition()
+            // this.startPos = coinNodePos;
+            // this.endPos = selfCoinNodePos;
+            // this.scheduleOnce(() => {
+            //     this.flyCoin(coinNodePos, selfCoinNodePos);
+            // }, 0.5)
+            // coinLabel.string = this.winCoin + "";
+            LoadMgr.loadSprite(this.btn2Sprite, "sub/image/view/endView/btn_no").then();
             this.scheduleOnce(() => {
                 this.onTouch(this.btn2Node, this.onClickNext);
             }, 1)
             // this.effectNode.active = true;
-            AudioMgr.play("view/game/win", 1, false).then();
+            AudioMgr.play("sub/audio/view/game/win", 1, false).then();
         } else {
-            this.coinNode.active = false;
+            // this.coinNode.active = false;
             this.loseTitle.active = true;
-            LoadMgr.loadSprite(this.btn2Sprite, "view/endView/btn_startOver").then();
+            LoadMgr.loadSprite(this.btn2Sprite, "sub/image/view/endView/btn_startOver").then();
             this.onTouch(this.btn2Node, this.onClickAgain)
-            AudioMgr.play("view/game/lose", 1, false).then()
+            AudioMgr.play("sub/audio/view/game/lose", 1, false).then()
         }
     }
 
@@ -221,21 +221,23 @@ export default class EndView extends LayerPanel {
     }
 
     public onClickNext() {
-        let isCanPlay = Tools.changeStamina(-1);
-        if (isCanPlay) {
-            this.closeEnd();
-        } else {
-            this.openHome();
-        }
+        this.closeEnd();
+        // let isCanPlay = Tools.changeStamina(-1);
+        // if (isCanPlay) {
+        //     this.closeEnd();
+        // } else {
+        //     this.openHome();
+        // }
     }
 
     public onClickAgain() {
-        let isCanPlay = Tools.changeStamina(-1);
-        if (isCanPlay) {
-            this.closeEnd();
-        } else {
-            this.openHome();
-        }
+        this.closeEnd();
+        // let isCanPlay = Tools.changeStamina(-1);
+        // if (isCanPlay) {
+        //     this.closeEnd();
+        // } else {
+        //     this.openHome();
+        // }
     }
 
     public onClickDouble() {

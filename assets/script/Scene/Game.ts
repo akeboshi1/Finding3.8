@@ -13,10 +13,10 @@ const {ccclass, property} = _decorator;
 
 @ccclass
 export default class Game extends Component {
-    @property(JsonAsset)
-    gameBox: JsonAsset = null;
-    @property(Node)
-    banner: Node = null
+    // @property(JsonAsset)
+    // gameBox: JsonAsset = null;
+    // @property(Node)
+    // banner: Node = null
 
     //Game实例
     public static Ins: Game = null;
@@ -32,36 +32,40 @@ export default class Game extends Component {
             this.do_after_panelMgr_initOK()
         }
 
-        if (Global.exportInfo.length == 0) {
-            Global.exportInfo = this.gameBox.json.data;
-        }
+        // if (Global.exportInfo.length == 0) {
+        //     Global.exportInfo = this.gameBox.json.data;
+        // }
     }
 
     //PanelMgr 初始化完成之后执行的方法
     do_after_panelMgr_initOK() {
-        if (this.BannerInit) {
-            PanelMgr.INS.openPanel({
-                layer: Layer.gameLayer,
-                panel: HomeView,
-            })
-        } else {
-            Emit.instance().on(EventCode.BannerBoxInitOver, () => {
-                this.BannerInit = true
-                PanelMgr.INS.openPanel({
-                    layer: Layer.gameLayer,
-                    panel: HomeView,
-                })
-            }, this)
-        }
+        PanelMgr.INS.openPanel({
+            layer: Layer.gameLayer,
+            panel: HomeView,
+        })
+        // if (this.BannerInit) {
+        //     PanelMgr.INS.openPanel({
+        //         layer: Layer.gameLayer,
+        //         panel: HomeView,
+        //     })
+        // } else {
+        //     Emit.instance().on(EventCode.BannerBoxInitOver, () => {
+        //         this.BannerInit = true
+        //         PanelMgr.INS.openPanel({
+        //             layer: Layer.gameLayer,
+        //             panel: HomeView,
+        //         })
+        //     }, this)
+        // }
     }
 
     //展示底部广告
     showBottomAdv() {
-        this.banner.parent.active = true
+        //this.banner.parent.active = true
     }
 
     //隐藏底部广告
     hideBottomAdv() {
-        this.banner.parent.active = false
+        //this.banner.parent.active = false
     }
 }

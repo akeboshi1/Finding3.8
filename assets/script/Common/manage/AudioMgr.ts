@@ -24,7 +24,7 @@ export default class AudioMgr {
             AudioMgr.audioSource.stop();
             // audioEngine.stopMusic();
         } else if (!AudioMgr.audioSource.playing) {
-            LoadMgr.load_AudioClip("bg").then((audio: AudioClip) => {
+            LoadMgr.load_AudioClip("sub/audio/bg").then((audio: AudioClip) => {
                 AudioMgr.audioSource.clip = audio;
                 AudioMgr.audioSource.loop = true;
                 AudioMgr.audioSource.volume = CacheMgr.setting.setting.music

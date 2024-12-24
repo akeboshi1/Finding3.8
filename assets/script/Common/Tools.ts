@@ -89,20 +89,20 @@ export default class Tools {
     }
 
 
-    public static openBox(box) {
-        return new Promise((resolve) => {
-            if (box === null || box === undefined || box === 0) {
-                resolve(true);
-            } else {
-                // UIMgr.openUI(this.getBox(box), lay, {boxPromise: resolve});
-                PanelMgr.INS.openPanel({
-                    panel: this.getBox(box),
-                    layer: Layer.gameBoxLayer,
-                    param: {boxPromise: resolve},
-                })
-            }
-        });
-    }
+    // public static openBox(box) {
+    //     return new Promise((resolve) => {
+    //         if (box === null || box === undefined || box === 0) {
+    //             resolve(true);
+    //         } else {
+    //             // UIMgr.openUI(this.getBox(box), lay, {boxPromise: resolve});
+    //             PanelMgr.INS.openPanel({
+    //                 panel: this.getBox(box),
+    //                 layer: Layer.gameBoxLayer,
+    //                 param: {boxPromise: resolve},
+    //             })
+    //         }
+    //     });
+    // }
 
     public static openTrea(pre) {
         return new Promise((resolve) => {
@@ -512,34 +512,34 @@ export default class Tools {
      * 改变节点位置的 y 为 banner 位置的 y (骗点用)
      * @param node
      */
-    public static changeNodePosition(node: Node) {
-        let banner = Game.Ins.banner;
-        const bannerUiTransform = banner.getComponent(UITransform);
-        if(!bannerUiTransform){
-            bannerUiTransform.addComponent(UITransform);
-        }
-        const y = banner.position.y + bannerUiTransform.height / 2;
-        node.setPosition(new Vec3(node.position.x,y));
-    }
+    // public static changeNodePosition(node: Node) {
+    //     let banner = Game.Ins.banner;
+    //     const bannerUiTransform = banner.getComponent(UITransform);
+    //     if(!bannerUiTransform){
+    //         bannerUiTransform.addComponent(UITransform);
+    //     }
+    //     const y = banner.position.y + bannerUiTransform.height / 2;
+    //     node.setPosition(new Vec3(node.position.x,y));
+    // }
 
     /**
      * 调整按钮位置到 banner上方
      * @param button
      */
-    public static setExportPos(button: Node) {
-        let banner = Game.Ins.banner;
-        this.changeNodePosition(button);
-        const bannerUiTransform = banner.getComponent(UITransform);
-        if(!bannerUiTransform){
-            bannerUiTransform.addComponent(UITransform);
-        }
-        const buttonUiTransform = button.getComponent(UITransform);
-        if(!buttonUiTransform){
-            buttonUiTransform.addComponent(UITransform);
-        }
-        const y = button.position.y + bannerUiTransform.height / 2 + buttonUiTransform.height/2;
-        button.setPosition(new Vec3(button.position.x,y))
-    }
+    // public static setExportPos(button: Node) {
+    //     let banner = Game.Ins.banner;
+    //     this.changeNodePosition(button);
+    //     const bannerUiTransform = banner.getComponent(UITransform);
+    //     if(!bannerUiTransform){
+    //         bannerUiTransform.addComponent(UITransform);
+    //     }
+    //     const buttonUiTransform = button.getComponent(UITransform);
+    //     if(!buttonUiTransform){
+    //         buttonUiTransform.addComponent(UITransform);
+    //     }
+    //     const y = button.position.y + bannerUiTransform.height / 2 + buttonUiTransform.height/2;
+    //     button.setPosition(new Vec3(button.position.x,y))
+    // }
 
 
     /**
@@ -547,22 +547,22 @@ export default class Tools {
      * @param time
      * @param button
      */
-    public static setExportPos_Animation(time: number, button: Node) {
-        let banner = Game.Ins.banner
-        this.changeNodePosition(button);
-        const bannerUiTransform = banner.getComponent(UITransform);
-        if(!bannerUiTransform){
-            bannerUiTransform.addComponent(UITransform);
-        }
-        const buttonUiTransform = button.getComponent(UITransform);
-        if(!buttonUiTransform){
-            buttonUiTransform.addComponent(UITransform);
-        }
-        tween(button)
-            .to(time, {position:new Vec3(button.position.x,button.position.y+bannerUiTransform.height/2+buttonUiTransform.height/2)}, {easing: "smooth"})
-            // .to(time, {y: button.y + banner.height / 2 + button.height / 2}, {easing: "smooth"})
-            .start();
-    }
+    // public static setExportPos_Animation(time: number, button: Node) {
+    //     let banner = Game.Ins.banner
+    //     this.changeNodePosition(button);
+    //     const bannerUiTransform = banner.getComponent(UITransform);
+    //     if(!bannerUiTransform){
+    //         bannerUiTransform.addComponent(UITransform);
+    //     }
+    //     const buttonUiTransform = button.getComponent(UITransform);
+    //     if(!buttonUiTransform){
+    //         buttonUiTransform.addComponent(UITransform);
+    //     }
+    //     tween(button)
+    //         .to(time, {position:new Vec3(button.position.x,button.position.y+bannerUiTransform.height/2+buttonUiTransform.height/2)}, {easing: "smooth"})
+    //         // .to(time, {y: button.y + banner.height / 2 + button.height / 2}, {easing: "smooth"})
+    //         .start();
+    // }
 
     /**
      * 判断百分比
@@ -588,30 +588,31 @@ export default class Tools {
      */
     public static model_initModel(f: Function): number {
         let functions: Function[] = [
-            () => {
-                let names = ["sub", "common"]
-                LoadMgr.loadBundle(names).then(() => {
-                    f()
-                })
-            },
-            () => {
-                TestMgr.start("加载SDK")
-                // JiuWuSDK.initSDK().then((res: any) => {
-                //     if (res.code) {
-                //         GameLogMgr.warn(Constant.LOGIN_CODE[res.code]);
-                //     }
-                //     TestMgr.end("加载SDK")
-                //     WechatApi.screenAdv.init();
-                //     WechatApi.rewardedVideo.init();
-                //     f();
-                // });
-            },
+            // () => {
+            //     let names = ["sub", "common"]
+            //     LoadMgr.loadBundle(names).then(() => {
+            //         f()
+            //     })
+            // },
+            // () => {
+            //     TestMgr.start("加载SDK")
+            //     // JiuWuSDK.initSDK().then((res: any) => {
+            //     //     if (res.code) {
+            //     //         GameLogMgr.warn(Constant.LOGIN_CODE[res.code]);
+            //     //     }
+            //     //     TestMgr.end("加载SDK")
+            //     //     WechatApi.screenAdv.init();
+            //     //     WechatApi.rewardedVideo.init();
+            //     //     f();
+            //     // });
+            // },
         ]
 
         for (let i = 0; i < functions.length; i++) {
             functions[i]();
         }
-        return functions.length;
+        f();
+        return functions.length||1;
     }
 
     /**
@@ -976,26 +977,26 @@ export default class Tools {
      * @param num 需要改动的体力
      * @param callBack
      */
-    public static changeStamina(num: number, callBack?: Function): boolean {
-        if (CacheMgr.stamina + num < 0) {
-            PanelMgr.INS.openPanel({
-                panel: ShortageView,
-                layer: Layer.gameLayer,
-                param: {
-                    type: "stamina",
-                    callBack: callBack,
-                    price: Math.abs(num),
-                }
-            })
-            return false;
-        } else {
-            if (callBack) {
-                callBack();
-            }
-        }
-        CacheMgr.stamina = CacheMgr.stamina + num;
-        return true;
-    }
+    // public static changeStamina(num: number, callBack?: Function): boolean {
+    //     if (CacheMgr.stamina + num < 0) {
+    //         PanelMgr.INS.openPanel({
+    //             panel: ShortageView,
+    //             layer: Layer.gameLayer,
+    //             param: {
+    //                 type: "stamina",
+    //                 callBack: callBack,
+    //                 price: Math.abs(num),
+    //             }
+    //         })
+    //         return false;
+    //     } else {
+    //         if (callBack) {
+    //             callBack();
+    //         }
+    //     }
+    //     CacheMgr.stamina = CacheMgr.stamina + num;
+    //     return true;
+    // }
 
     /**
      * 修改金币 ， 如果金币不足 ，修改失败的话 ，会自动弹出金币不足框

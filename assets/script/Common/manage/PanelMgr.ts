@@ -5,7 +5,6 @@ import LayerPanel, {UrlInfo} from "./Layer/LayerPanel";
 import LoadMgr from "./LoadMgr";
 import Global from "../Global";
 import Tools from "../Tools";
-import SliderBox from "../../Moudle/Box/SliderBox";
 import CacheMgr from "./CacheMgr";
 import Constant from "../Constant";
 import {_decorator,Node,Component,instantiate,Prefab} from "cc"
@@ -90,7 +89,7 @@ export default class PanelMgr extends Component {
                     }
                     // }, 0)
                 } else {
-                    LoadMgr.loadPrefab(urlInfo.name, LoadMgr.getBundle(urlInfo.bundle)).then((prefab: Prefab) => {
+                    LoadMgr.loadPrefab(urlInfo.name).then((prefab: Prefab) => {
                         panel = instantiate(prefab)
                         panel.parent = layer
                         panel.active = false
@@ -110,29 +109,29 @@ export default class PanelMgr extends Component {
                     })
                 }
             }
-
-            if (LoadMgr.judgeBundleLoad(urlInfo.name)) {
-                GameLogMgr.log("bundle已经加载好了:", urlInfo.name)
-                way()
-            } else {
-                GameLogMgr.log("bundle还没加载好,需要加载一下")
-                LoadMgr.loadBundle_Single(urlInfo.bundle).then(() => {
-                    way()
-                })
-            }
+            way();
+            // if (LoadMgr.judgeBundleLoad(urlInfo.name)) {
+            //     GameLogMgr.log("bundle已经加载好了:", urlInfo.name)
+            //     way()
+            // } else {
+            //     GameLogMgr.log("bundle还没加载好,需要加载一下")
+            //     LoadMgr.loadBundle_Single(urlInfo.bundle).then(() => {
+            //         way()
+            //     })
+            // }
         }
         //获取配置信息
-        if (config) {
-            this.handlePanelConfig(config).then(
-                () => {
-                    //存在配置 ，需要先打开配置
-                    openPanelWay()
-                }
-            )
-        } else {
+        // if (config) {
+        //     this.handlePanelConfig(config).then(
+        //         () => {
+        //             //存在配置 ，需要先打开配置
+        //             openPanelWay()
+        //         }
+        //     )
+        // } else {
             //没有配置立即准备打开目标panel
             openPanelWay()
-        }
+        // }
     }
 
     private showPanel(panel: Node, param: any, config: any) {
@@ -145,13 +144,13 @@ export default class PanelMgr extends Component {
             }
 
 
-            if (config.more_game && config.more_game.length > 0) {
-                script.initMoreGame(() => {
-                    this.handlePanelMorePlay(config.more_game)
-                })
-            } else {
-
-            }
+            // if (config.more_game && config.more_game.length > 0) {
+            //     script.initMoreGame(() => {
+            //         this.handlePanelMorePlay(config.more_game)
+            //     })
+            // } else {
+            //
+            // }
         }
         script.show(param)
         panel.active = true
@@ -193,58 +192,58 @@ export default class PanelMgr extends Component {
     }
 
     //处理Panel配置
-    handlePanelConfig(config) {
-        PanelMgr.INS.closePanel(SliderBox)
-        return new Promise((resolve, reject) => {
-            Tools.openBox(config.export_show[0]).then(() => {
-                return Tools.openBox(config.export_show[1]);
-            }).then(() => {
-                return Tools.openBox(config.export_show[2]);
-            }).then(() => {
-                return Tools.openBox(config.export_show[3]);
-            }).then(() => {
-                //判断宝箱
-                return Tools.openTrea(config.chest_probability);
-            }).then(() => {
-                //判断强拉视频
-                return new Promise((resolve, reject) => {
-                    if (Tools.checkPer(config.video_probability) && !Global.config.adv_unit_conf.video_auto_play) {
-                        Tools.handleVideo(Constant.VIDEO_TYPE.ENFORCE).then(() => {
-                            resolve(true)
-                        })
-                    } else {
-                        resolve(true)
-                    }
-                })
-            }).then(() => {
-                // if (Tools.checkPer(config.banner_probability)) {
-                //     WechatApi.bottomAdv.show()
-                // } else {
-                //     WechatApi.bottomAdv.hide()
-                // }
-                if (config.slider > 0) {
-                    PanelMgr.INS.openPanel({
-                        layer: Layer.sliderLayer,
-                        panel: SliderBox,
-                        param: {
-                            code: config.slider
-                        }
-                    })
-                }
-                return resolve(true)
-            });
-        })
-    }
+    // handlePanelConfig(config) {
+    //     PanelMgr.INS.closePanel(SliderBox)
+    //     return new Promise((resolve, reject) => {
+    //         Tools.openBox(config.export_show[0]).then(() => {
+    //             return Tools.openBox(config.export_show[1]);
+    //         }).then(() => {
+    //             return Tools.openBox(config.export_show[2]);
+    //         }).then(() => {
+    //             return Tools.openBox(config.export_show[3]);
+    //         }).then(() => {
+    //             //判断宝箱
+    //             return Tools.openTrea(config.chest_probability);
+    //         }).then(() => {
+    //             //判断强拉视频
+    //             return new Promise((resolve, reject) => {
+    //                 if (Tools.checkPer(config.video_probability) && !Global.config.adv_unit_conf.video_auto_play) {
+    //                     Tools.handleVideo(Constant.VIDEO_TYPE.ENFORCE).then(() => {
+    //                         resolve(true)
+    //                     })
+    //                 } else {
+    //                     resolve(true)
+    //                 }
+    //             })
+    //         }).then(() => {
+    //             // if (Tools.checkPer(config.banner_probability)) {
+    //             //     WechatApi.bottomAdv.show()
+    //             // } else {
+    //             //     WechatApi.bottomAdv.hide()
+    //             // }
+    //             if (config.slider > 0) {
+    //                 PanelMgr.INS.openPanel({
+    //                     layer: Layer.sliderLayer,
+    //                     panel: SliderBox,
+    //                     param: {
+    //                         code: config.slider
+    //                     }
+    //                 })
+    //             }
+    //             return resolve(true)
+    //         });
+    //     })
+    // }
 
-    handlePanelMorePlay(config) {
-        Tools.openBox(config[0]).then(() => {
-            return Tools.openBox(config[1]);
-        }).then(() => {
-            return Tools.openBox(config[2]);
-        }).then(() => {
-            return Tools.openBox(config[3]);
-        })
-    }
+    // handlePanelMorePlay(config) {
+    //     Tools.openBox(config[0]).then(() => {
+    //         return Tools.openBox(config[1]);
+    //     }).then(() => {
+    //         return Tools.openBox(config[2]);
+    //     }).then(() => {
+    //         return Tools.openBox(config[3]);
+    //     })
+    // }
 
 }
 
@@ -253,8 +252,6 @@ export enum Layer {
     gameInfoLayer,
     sliderLayer,
     chestLayer,
-    gameBoxLayer,
-    bannerLayer,
 }
 
 export enum View {

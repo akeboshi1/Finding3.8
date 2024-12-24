@@ -90,6 +90,9 @@ export default class GameConfig {
         [{w: 92, h: 41}, {w: 68, h: 59}, {w: 72, h: 65}, {w: 76, h: 51}, {w: 94, h: 45}],
         [{w: 80, h: 48}, {w: 79, h: 53}, {w: 73, h: 59}, {w: 60, h: 64}, {w: 61, h: 61}],
         [{w: 133, h: 90}, {w: 62, h: 60}, {w: 74, h: 60}, {w: 64, h: 74}, {w: 67, h: 68}],
+
+
+
         [{w: 103, h: 86}, {w: 159, h: 89}, {w: 112, h: 113}, {w: 159, h: 117}, {w: 137, h: 68}],
         [{w: 99, h: 133}, {w: 142, h: 107}, {w: 89, h: 73}, {w: 73, h: 83}, {w: 90, h: 79}],
         [{w: 94, h: 56}, {w: 78, h: 66}, {w: 74, h: 92}, {w: 119, h: 82}, {w: 96, h: 89}],
@@ -133,19 +136,19 @@ export default class GameConfig {
     public static checkArea = 30;
 
     public static prefabData = [
-        "game/good",
-        "game/great",
-        "game/amazing",
-        "game/excellent",
-        "game/unbelievable",
+        "sub/prefab/game/good",
+        "sub/prefab/game/great",
+        "sub/prefab/game/amazing",
+        "sub/prefab/game/excellent",
+        "sub/prefab/game/unbelievable",
     ]
 
     public static soundData = [
-        "view/game/good",
-        "view/game/great",
-        "view/game/amazing",
-        "view/game/excellent",
-        "view/game/unbelievable",
+        "sub/audio/view/game/good",
+        "sub/audio/view/game/great",
+        "sub/audio/view/game/amazing",
+        "sub/audio/view/game/excellent",
+        "sub/audio/view/game/unbelievable",
     ]
 
     public static clockTime = 10;

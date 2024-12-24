@@ -19,7 +19,7 @@ export default class GameView extends LayerPanel {
     public static getUrl(): UrlInfo {
         return {
             bundle: "gameView",
-            name: "gameView"
+            name: "View/gameView/prefab/gameView",
         }
     }
 
@@ -47,9 +47,9 @@ export default class GameView extends LayerPanel {
 
     private progressSprite: Sprite = null;
 
-    private hintNode: Node = null;
-
-    private addTime: Node = null;
+    // private hintNode: Node = null;
+    //
+    // private addTime: Node = null;
 
     private hintData = null;
 
@@ -73,9 +73,9 @@ export default class GameView extends LayerPanel {
 
     private backNode: Node = null;
 
-    private shareNode: Node = null;
+    // private shareNode: Node = null;
 
-    private newHandHintNode: Node = null;
+    // private newHandHintNode: Node = null;
 
     private clockTime: number = null;
 
@@ -83,13 +83,13 @@ export default class GameView extends LayerPanel {
 
     private tempList = [];
 
-    private addTimeCountNode: Node = null;
+    // private addTimeCountNode: Node = null;
 
-    private addTimeVideo: Node = null;
+    // private addTimeVideo: Node = null;
 
-    private hintCountNode: Node = null;
+    // private hintCountNode: Node = null;
 
-    private hintVideoNode: Node = null;
+    // private hintVideoNode: Node = null;
 
     private tempCountDown: number = null;
 
@@ -106,25 +106,25 @@ export default class GameView extends LayerPanel {
         this.picture2 = this.getNode("picture2Bg/mask/picture");
         this.pictureList.push(this.picture2);
         this.resultNode = this.getNode("resultList");
-        this.countDownLabel = this.getNode("countDown/label");
+        this.countDownLabel = this.getNode("countDown/Label");
         this.countDown = this.countDownLabel.getComponent(Label);
         this.countDownTime = GameConfig.customTime;
         this.tempCountDown = GameConfig.allTime;
         this.progress = this.getNode("countDown/progress");
         this.progressSprite = this.progress.getComponent(Sprite);
-        this.hintNode = this.getNode("hint");
-        this.addTime = this.getNode("addTime");
-        this.hintCountNode = this.hintNode.getChildByName("count");
-        this.hintVideoNode = this.hintNode.getChildByName("video");
-        this.addTimeCountNode = this.addTime.getChildByName("count");
-        this.addTimeVideo = this.addTime.getChildByName("video")
-        this.customsNode = this.getNode("customs/label");
+        // this.hintNode = this.getNode("hint");
+        // this.addTime = this.getNode("addTime");
+        // this.hintCountNode = this.hintNode.getChildByName("count");
+        // this.hintVideoNode = this.hintNode.getChildByName("video");
+        // this.addTimeCountNode = this.addTime.getChildByName("count");
+        // this.addTimeVideo = this.addTime.getChildByName("video")
+        this.customsNode = this.getNode("customs/Label");
         this.victory = this.getNode("victory");
         this.backNode = this.getNode("back")
-        this.shareNode = this.getNode("shareNode")
+        // this.shareNode = this.getNode("shareNode")
         this.victory.active = false;
-        this.newHandHintNode = this.getNode("newHandHint");
-        this.newHandHintNode.active = false;
+        // this.newHandHintNode = this.getNode("newHandHint");
+        // this.newHandHintNode.active = false;
         this.plistNode = this.getNode("caidai");
         this.plistNode.active = false;
         let checkPoint = CacheMgr.checkpoint;
@@ -136,26 +136,26 @@ export default class GameView extends LayerPanel {
         }else{
             customCount = loopLevel;
         }
-        LoadMgr.loadBundle_Single("level" + GameConfig.level_order[customCount]).then()
+        // LoadMgr.loadBundle_Single("level" + GameConfig.level_order[customCount]).then()
         this.customsNode.getComponent(Label).string = "第" + checkPoint + "关";
         let bundleName = "level" + GameConfig.level_order[loopLevel - 1]
         let pictureSprite1 = this.picture1.getComponent(Sprite);
         let pictureSprite2 = this.picture2.getComponent(Sprite);
-        LoadMgr.loadSprite(pictureSprite1, "bg", LoadMgr.getBundle(bundleName)).then();
-        LoadMgr.loadSprite(pictureSprite2, "bg", LoadMgr.getBundle(bundleName)).then();
+        LoadMgr.loadSprite(pictureSprite1, bundleName+"/image/bg").then();
+        LoadMgr.loadSprite(pictureSprite2, bundleName+"/image/bg").then();
         let custData = GameConfig.level_data[loopLevel - 1];
         let sizeData = GameConfig.level_data_size[loopLevel - 1];
         // LoadMgr.loadAtlas("view/gameView/customData/customData").then((alert: SpriteAtlas) => {
         for (let i = 0; i < custData.length; i++) {
-            let node: Node = new Node()
-            node.setScale(0.91,0.91);
-            let nodeUITransform = node.getComponent(UITransform);
+            let node: Node = new Node();
+            let nodeUITransform = node.addComponent(UITransform);
+            // node.setScale(0.91,0.91);
             nodeUITransform.width = sizeData[i].w;
             nodeUITransform.height = sizeData[i].h;
             node.setPosition(custData[i].x, custData[i].y)
             nodeUITransform.setAnchorPoint(0.5, 0.5);
             let sprite = node.addComponent(Sprite);
-            LoadMgr.loadSprite(sprite, String(i), LoadMgr.getBundle(bundleName)).then()
+            LoadMgr.loadSprite(sprite, bundleName+"/image/"+String(i)).then()
             sprite.sizeMode = Sprite.SizeMode.CUSTOM;
             // let url = loopLevel + "-" + i;
             // let frame = alert.getSpriteFrame(url);
@@ -166,24 +166,25 @@ export default class GameView extends LayerPanel {
         }
         if (checkPoint == 1) {
             this.newHandHint();
-        } else {
-            this.hintNode.active = true
-            this.addTime.active = true;
         }
+        // else {
+        //     this.hintNode.active = true
+        //     this.addTime.active = true;
+        // }
         // })
-        this.onTouch(this.hintNode, () => {
-            this.clickHint(true);
-        })
-        this.onTouch(this.addTime, () => {
-            this.clickAddTime();
-        })
+        // this.onTouch(this.hintNode, () => {
+        //     this.clickHint(true);
+        // })
+        // this.onTouch(this.addTime, () => {
+        //     this.clickAddTime();
+        // })
         for (let j = 0; j < this.resultNode.children.length; j++) {
             let children = this.resultNode.children[j].getChildByName("right")
             children.active = false;
         }
-        this.onTouch(this.shareNode, () => {
-            Tools.activeShare();
-        })
+        // this.onTouch(this.shareNode, () => {
+        //     Tools.activeShare();
+        // })
         this.onTouch(this.backNode, () => {
             PanelMgr.INS.openPanel({
                 layer: Layer.gameLayer,
@@ -205,31 +206,31 @@ export default class GameView extends LayerPanel {
         let time: number = CacheMgr.addTime;
         let hint: number = CacheMgr.hint;
         if (time <= 0) {
-            this.addTimeVideo.active = true;
-            this.addTimeCountNode.active = false;
+            // this.addTimeVideo.active = true;
+            // this.addTimeCountNode.active = false;
         } else {
-            this.addTimeVideo.active = false;
-            this.addTimeCountNode.active = true;
-            let label = this.addTimeCountNode.getChildByName("label").getComponent(Label);
-            label.string = time + "";
+            // this.addTimeVideo.active = false;
+            // this.addTimeCountNode.active = true;
+            // let label = this.addTimeCountNode.getChildByName("label").getComponent(Label);
+            // label.string = time + "";
         }
         if (hint <= 0) {
-            this.hintVideoNode.active = true;
-            this.hintCountNode.active = false;
+            // this.hintVideoNode.active = true;
+            // this.hintCountNode.active = false;
         } else {
-            this.hintVideoNode.active = false;
-            this.hintCountNode.active = true;
-            let label = this.hintCountNode.getChildByName("label").getComponent(Label);
-            label.string = hint + "";
+            // this.hintVideoNode.active = false;
+            // this.hintCountNode.active = true;
+            // let label = this.hintCountNode.getChildByName("label").getComponent(Label);
+            // label.string = hint + "";
         }
     }
 
     public newHandHint() {
         console.log("进入新手提示");
         this.clickHint(false);
-        this.hintNode.active = false;
-        this.addTime.active = false;
-        this.newHandHintNode.active = true;
+        // this.hintNode.active = false;
+        // this.addTime.active = false;
+        // this.newHandHintNode.active = true;
     }
 
     update(dt) {
@@ -243,9 +244,9 @@ export default class GameView extends LayerPanel {
         if (this.gameOver) return;
         if (Math.ceil(this.clockTime) <= 0) {
             this.clockTime = GameConfig.clockTime;
-            AudioMgr.play("view/game/clock").then()
-            ActionMgr.shakeNode(this.hintNode)
-            ActionMgr.shakeNode(this.addTime)
+            AudioMgr.play("sub/audio/view/game/clock").then()
+            // ActionMgr.shakeNode(this.hintNode)
+            // ActionMgr.shakeNode(this.addTime)
         }
         this.clockTime -= dt;
     }
@@ -336,7 +337,7 @@ export default class GameView extends LayerPanel {
     }
 
     public handler_hint(i) {
-        let url = "view/gameView/public/hint";
+        let url = "sub/image/view/gameView/public/hint";
         this.hintData = this.frameList[i];
         for (let j = 0; j < this.pictureList.length; j++) {
             if (j == 0) {
@@ -346,13 +347,16 @@ export default class GameView extends LayerPanel {
                 let node = new Node();
                 node.name = "hand";
                 let nodeUITransform = node.getComponent(UITransform);
+                if(!nodeUITransform){
+                    nodeUITransform = node.addComponent(UITransform);
+                }
                 nodeUITransform.width = 90;
                 nodeUITransform.height = 90;
                 nodeUITransform.setAnchorPoint(0.5, 0.5)
                 node.angle = 90;
                 let sprite: Sprite = node.addComponent(Sprite);
                 sprite.sizeMode = Sprite.SizeMode.CUSTOM;
-                LoadMgr.loadSprite(sprite, "view/gameView/public/hand").then();
+                LoadMgr.loadSprite(sprite, "sub/image/view/gameView/public/hand").then();
                 this.hintRoundNode2.addChild(node);
                 node.setPosition(new Vec3(node.position.x+nodeUITransform.width/2,node.position.y-nodeUITransform.height/2));
                 // node.y -= node.width / 2;
@@ -368,20 +372,24 @@ export default class GameView extends LayerPanel {
     }
 
     public onTouchDown(event) {
-        let clickPos = event.getLocation();
+        let clickPos =  event.getUILocation();
         let target: Node = event.target;
         let targetUITransform = target.getComponent(UITransform);
-        let nodePos = targetUITransform.convertToNodeSpaceAR(clickPos);
+        if(!targetUITransform){
+            targetUITransform = target.addComponent(UITransform);
+        }
+        let nodePos = targetUITransform.convertToNodeSpaceAR(new Vec3(clickPos.x,clickPos.y,0));
         let rect = new Rect(nodePos.x, nodePos.y, GameConfig.checkArea, GameConfig.checkArea);
         rect.x -= GameConfig.checkArea / 2;
         rect.y -= GameConfig.checkArea / 2;
         let isRight: boolean = false;
-        let url = "view/gameView/public/rightRound";
+        let url = "sub/image/view/gameView/public/rightRound";
         for (let i = 0; i < this.frameList.length; i++) {
-            let isClick = rect.intersects(this.frameList[i]);
+            let checkRect = this.frameList[i];
+            let isClick = rect.intersects(checkRect);
             if (isClick) {
                 isRight = true;
-                AudioMgr.play("view/game/right", 1, false).then()
+                AudioMgr.play("sub/audio/view/game/right", 1, false).then()
                 let destroyHint = () => {
                     this.hintData = null;
                     if (this.hintRoundNode1) {
@@ -471,11 +479,17 @@ export default class GameView extends LayerPanel {
         let result = this.resultList.length;
         if (this.resultList.length == 5) {
             this.plistNode.active = true;
-            AudioMgr.play("view/game/sahua").then();
+            AudioMgr.play("sub/audio/view/game/sahua").then();
         }
         let resultNode = this.resultNode.children[result - 1];
         let resultParentNodeUITransform = resultNode.parent.getComponent(UITransform);
+        if(!resultParentNodeUITransform){
+            resultParentNodeUITransform = resultNode.parent.addComponent(UITransform);
+        }
         let nodeUITransform = this.node.getComponent(UITransform);
+        if(!nodeUITransform){
+            nodeUITransform = this.node.addComponent(UITransform);
+        }
         let resultPos = resultNode.getPosition();
         let resultWorldPos = resultParentNodeUITransform.convertToWorldSpaceAR(resultPos);
         let targetNodePos = nodeUITransform.convertToNodeSpaceAR(resultWorldPos);
@@ -484,7 +498,7 @@ export default class GameView extends LayerPanel {
         node.name = "particle";
         node.setPosition(pos);
         let particleComp: ParticleSystem2D = node.addComponent(ParticleSystem2D);
-        let particleUrl = "view/gameView/particle/win";
+        let particleUrl = "sub/image/view/gameView/particle/win";
         LoadMgr.loadParticle(particleUrl).then((particle: ParticleAsset) => {
             particleComp.file = particle;
         })
@@ -509,7 +523,7 @@ export default class GameView extends LayerPanel {
 
     public createRound(index1, index2, url, dia) {
         let node: Node = new Node();
-        let nodeUITransform = node.getComponent(UITransform);
+        let nodeUITransform = node.addComponent(UITransform);
         nodeUITransform.width = dia;
         nodeUITransform.height = dia;
         //矩形是从左下角为锚点
@@ -528,17 +542,21 @@ export default class GameView extends LayerPanel {
         this.isStartCount = false;
         this.interval = 0;
         this.hintIndex = 0;
-        AudioMgr.play("view/game/err", 1, false).then();
-        let node: Node = new Node;
-        let nodeUITransform = node.getComponent(UITransform);
+        AudioMgr.play("sub/audio/view/game/err", 1, false).then();
+        let node: Node = new Node();
+        let nodeUITransform = node.addComponent(UITransform);
         nodeUITransform.width = 60;
         nodeUITransform.height = 60;
-        let gameViewPos = this.node.getComponent(UITransform).convertToNodeSpaceAR(clickPos);
+        let gameViewUITransform = this.node.getComponent(UITransform);
+        if(!gameViewUITransform){
+            gameViewUITransform = this.node.addComponent(UITransform);
+        }
+        let gameViewPos = gameViewUITransform.convertToNodeSpaceAR(clickPos);
         node.setPosition(gameViewPos);
         nodeUITransform.setAnchorPoint(0.5, 0.5);
         let sprite: Sprite = node.addComponent(Sprite);
         sprite.sizeMode = Sprite.SizeMode.CUSTOM;
-        LoadMgr.loadSprite(sprite, "view/gameView/public/err");
+        LoadMgr.loadSprite(sprite, "sub/image/view/gameView/public/err");
         this.node.addChild(node);
         this.errNode = node;
         let opacityComponent = node.getComponent(UIOpacity);
@@ -551,19 +569,25 @@ export default class GameView extends LayerPanel {
                 node.destroy();
             })
             .start()
-        let count: Node = new Node;
+        let count: Node = new Node();
         count.setPosition(gameViewPos);
-        let countTransform = count.getComponent(UITransform);
+        let countTransform = count.addComponent(UITransform);
         countTransform.setAnchorPoint(0.5, 0.5);
-        let countSprite = count.getComponent(Sprite);
+        let countSprite = count.addComponent(Sprite);
         countSprite.color = new Color(255, 0, 0, 255);
         let str = count.addComponent(Label);
         str.string = "-10";
         str.fontSize = 40;
         this.node.addChild(count);
         let countDownLabelUITransform = this.countDownLabel.getComponent(UITransform);
+        if(!countDownLabelUITransform){
+            countDownLabelUITransform = this.countDownLabel.addComponent(UITransform);
+        }
         let resultPos = countDownLabelUITransform.convertToWorldSpaceAR(this.countDownLabel.getPosition());
         let countParentUITransform = count.parent.getComponent(UITransform);
+        if(!countParentUITransform){
+            countDownLabelUITransform = count.parent.addComponent(UITransform);
+        }
         let nodePos = countParentUITransform.convertToNodeSpaceAR(resultPos);
         tween(count)
             .to(1, {position:new Vec3(nodePos.x,nodePos.y)})

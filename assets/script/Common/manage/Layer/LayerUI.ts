@@ -44,7 +44,7 @@ export default class LayerUI extends Component {
      * @param scale     缩放值
      * @param stopEvent
      */
-    protected onTouch(target: Node, handler: Function, sound: string = "click", scale = 0.9, stopEvent = true) {
+    protected onTouch(target: Node, handler: Function, sound: string = "sub/audio/click", scale = 0.9, stopEvent = true) {
         if (!target || !handler) {
             GameLog.error("target || handler为空-->", target, handler);
             return;
@@ -82,9 +82,9 @@ export default class LayerUI extends Component {
             if (!enabled) {
                 return;
             }
-            if (stopEvent) {
-                event.stopPropagation();
-            }
+
+            event.propagationStopped = stopEvent;
+
             if (sound && sound != "") {
                 // if (sound === "check") {
                 // sound = "piano/a" + Math.floor(Math.random() * (5 - 1) + 1);

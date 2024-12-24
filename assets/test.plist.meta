@@ -2,7 +2,7 @@
   "ver": "1.0.2",
   "importer": "particle",
   "imported": true,
-  "uuid": "92704fc5-4b5a-44b1-9838-b0317030ff6e",
+  "uuid": "831bea06-7a8b-4cf8-bcca-2f1463640012",
   "files": [
     ".json",
     ".plist"
@@ -17,28 +17,28 @@
     "srcBlendFactor": 770,
     "dstBlendFactor": 771,
     "startColor": {
-      "_val": 2740373706,
+      "_val": 4286545791,
       "r": 127,
       "g": 127,
       "b": 127,
       "a": 255
     },
     "startColorVar": {
-      "_val": 3333292005,
+      "_val": 4294967295,
       "r": 255,
       "g": 255,
       "b": 255,
       "a": 255
     },
     "endColor": {
-      "_val": 3591610797,
+      "_val": 4294967295,
       "r": 255,
       "g": 255,
       "b": 255,
       "a": 255
     },
     "endColorVar": {
-      "_val": 3170498923,
+      "_val": 4294967295,
       "r": 255,
       "g": 255,
       "b": 255,
@@ -81,6 +81,6 @@
     "endRadiusVar": 0,
     "rotatePerS": 0,
     "rotatePerSVar": 0,
-    "spriteFrameUuid": "ba7a0b76-2f7f-4af7-8ce2-3fff6f13b247@f9941"
+    "spriteFrameUuid": "a0deeaf0-b072-466a-99fd-650c81ce5ba0@f9941"
   }
 }

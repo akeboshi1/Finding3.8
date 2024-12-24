@@ -1,6 +1,6 @@
 import Global from "../Global";
 import GameLog from "./GameLogMgr";
-import {Texture2D , AssetManager,assetManager,AudioClip,Sprite,SpriteFrame,Prefab,SpriteAtlas,ParticleAsset} from "cc"
+import {Texture2D , AssetManager,assetManager,AudioClip,Sprite,SpriteFrame,Prefab,SpriteAtlas,ParticleAsset,resources} from "cc"
 import GameLogMgr from "./GameLogMgr";
 import Bundle = AssetManager.Bundle;
 
@@ -52,41 +52,40 @@ export default class LoadMgr {
 
     //提前初始化所有分包
     public static init_bundleMgr() {
-        this.loadBundle_Single("homeView").then()
-        this.loadBundle_Single("gameView").then()
-        this.loadBundle_Single("homeView").then()
-        this.loadBundle_Single("treaView").then()
-        this.loadBundle_Single("oneBox").then()
-        // this.loadBundle_Single("twoBox").then()
-        // this.loadBundle_Single("threeBox").then()
-        // this.loadBundle_Single("fourBox").then()
-        this.loadBundle_Single("sliderBox").then()
+        // this.loadBundle_Single("homeView").then()
+        // this.loadBundle_Single("gameView").then()
+        // this.loadBundle_Single("homeView").then()
+        // this.loadBundle_Single("treaView").then()
+        // this.loadBundle_Single("oneBox").then()
+        // // this.loadBundle_Single("twoBox").then()
+        // // this.loadBundle_Single("threeBox").then()
+        // // this.loadBundle_Single("fourBox").then()
+        // this.loadBundle_Single("sliderBox").then()
     }
 
     /**
      * 加载图片
      * @param sprite
      * @param _url
-     * @param bundle 图片所在的分包
      * @param needActive
      */
-    public static loadSprite(sprite: Sprite, _url: string, bundle: Bundle = this.getBundle("sub"), needActive = true) {
+    public static loadSprite(sprite: Sprite, _url: string, needActive = true) {
         return new Promise((resolve, reject) => {
-            if (this._sprite.hasOwnProperty(bundle.name + "/" + _url)) {
-                sprite.spriteFrame = this._sprite[bundle.name + "/" + _url];
+            if (this._sprite.hasOwnProperty(_url)) {
+                sprite.spriteFrame = this._sprite[_url];
                 if (needActive) {
                     sprite.node.active = true;
                 }
-                resolve(this._sprite[bundle.name + "/" + _url]);
+                resolve(this._sprite[_url]);
                 return;
             }
-            bundle.load("image/" + _url, SpriteFrame, (err: Error, spf: SpriteFrame) => {
+            resources.load( _url+"/spriteFrame", SpriteFrame, (err: Error, spf: SpriteFrame) => {
                 if (err) {
                     GameLog.error(_url, ' 图片加载错误 ', err);
                     reject(false);
                     return;
                 }
-                this._sprite[bundle.name + "/" + _url] = spf;
+                this._sprite[_url] = spf;
                 sprite.spriteFrame = spf;
                 if (needActive) {
                     sprite.node.active = true;
@@ -105,7 +104,7 @@ export default class LoadMgr {
         //更新导出的图片信息
         for (let i = 0; i < Global.exportInfo.length; i++) {
             let url = Global.exportInfo[i].iconImg
-            assetManager.loadRemote(url, Texture2D, (err, texture: Texture2D) => {
+            assetManager.loadRemote(url+"/texture", Texture2D, (err, texture: Texture2D) => {
                 if (texture.width == 0) {
                     let path = assetManager.cacheManager.getTemp(url);
                     assetManager.loadRemote(path, (err, sp: Texture2D) => {
@@ -188,15 +187,14 @@ export default class LoadMgr {
     /**
      * 加载 预制体
      * @param _url
-     * @param bundle  预制体所在的分包
      */
-    public static loadPrefab(_url: string, bundle: Bundle = this.getBundle("sub")) {
+    public static loadPrefab(_url: string) {
         return new Promise((resolve, reject) => {
             if (this._prefabCaches.hasOwnProperty(_url)) {
                 resolve(this._prefabCaches[_url]);
                 return;
             }
-            bundle.load("prefab/" + _url, Prefab, (err: Error, prefab: Prefab) => {
+            resources.load(_url, Prefab, (err: Error, prefab: Prefab) => {
                 if (err) {
                     GameLog.error('setPrefab error', err, _url);
                     reject(false);
@@ -210,13 +208,13 @@ export default class LoadMgr {
 
     private static _audio_caches: Map<string, AudioClip> = new Map<string, AudioClip>();
 
-    public static load_AudioClip(_url: string, bundle: Bundle = this.getBundle("sub")) {
+    public static load_AudioClip(_url: string) {
         return new Promise((resolve, reject) => {
             if (this._audio_caches.get(_url)) {
                 let audioClip = this._audio_caches.get(_url);
                 resolve(audioClip);
             } else {
-                bundle.load("audio/" + _url, AudioClip, (err, audio: AudioClip) => {
+                resources.load(_url, AudioClip, (err, audio: AudioClip) => {
                     if (err) {
                         GameLog.error("加载音频失败", err, "url : ", _url);
                         reject(null);
@@ -261,7 +259,7 @@ export default class LoadMgr {
                 resolve(this._particleCaches[_url]);
                 return;
             }
-            bundle.load("image/" + _url, ParticleAsset, (err: Error, particle: ParticleAsset) => {
+            resources.load(_url, ParticleAsset, (err: Error, particle: ParticleAsset) => {
                 if (err) {
                     GameLog.log('setParticle error', err, _url);
                     reject(false);

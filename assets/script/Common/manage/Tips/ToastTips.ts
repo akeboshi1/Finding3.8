@@ -12,7 +12,7 @@ export default class ToastTips extends LayerPanel {
     public static getUrl(): UrlInfo {
         return {
             bundle: "toastView",
-            name: "toastView"
+            name: "View/toastView/prefab/toastView"
         };
     }
 

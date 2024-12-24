@@ -14,7 +14,7 @@ export default class HomeView extends LayerPanel {
     public static getUrl(): UrlInfo {
         return {
             bundle: "homeView",
-            name: "homeView"
+            name: "View/homeView/prefab/homeView",
         }
     }
 
@@ -41,24 +41,24 @@ export default class HomeView extends LayerPanel {
 
 
     show(param: any): void {
-        this.onTouch(this.btn_setting, () => {
-            LoadMgr.loadPrefab("game/settingBox").then((prefab: Prefab) => {
-                let node: Node = instantiate(prefab);
-                this.node.addChild(node);
-            })
-        })
-        this.onTouch(this.btn_shop, () => {
-            LoadMgr.loadPrefab("game/shop").then((prefab: Prefab) => {
-                let node: Node = instantiate(prefab);
-                this.node.addChild(node);
-            })
-        })
-        this.onTouch(this.btn_signIn, () => {
-            LoadMgr.loadPrefab("game/signIn").then((prefab: Prefab) => {
-                let node: Node = instantiate(prefab);
-                this.node.addChild(node);
-            })
-        })
+        // this.onTouch(this.btn_setting, () => {
+        //     LoadMgr.loadPrefab("game/settingBox").then((prefab: Prefab) => {
+        //         let node: Node = instantiate(prefab);
+        //         this.node.addChild(node);
+        //     })
+        // })
+        // this.onTouch(this.btn_shop, () => {
+        //     LoadMgr.loadPrefab("game/shop").then((prefab: Prefab) => {
+        //         let node: Node = instantiate(prefab);
+        //         this.node.addChild(node);
+        //     })
+        // })
+        // this.onTouch(this.btn_signIn, () => {
+        //     LoadMgr.loadPrefab("game/signIn").then((prefab: Prefab) => {
+        //         let node: Node = instantiate(prefab);
+        //         this.node.addChild(node);
+        //     })
+        // })
         let checkPoint = CacheMgr.checkpoint;
         if (checkPoint == 0) {
             CacheMgr.checkpoint = 1;
@@ -70,38 +70,37 @@ export default class HomeView extends LayerPanel {
         let pictureSprite = this.pictureNode.getComponent(Sprite);
         pictureSprite.sizeMode = Sprite.SizeMode.CUSTOM;
         let way = () => {
-            let url = "bg"
-            LoadMgr.loadSprite(pictureSprite, url, LoadMgr.getBundle("level" + custom)).then();
+            let url = "level" + custom+"/image/bg";
+            // LoadMgr.getBundle("level" + custom)
+            LoadMgr.loadSprite(pictureSprite, url).then();
         }
-        if (!this.loadBundle(custom)) {
-            LoadMgr.loadBundle_Single("level" + custom).then(() => {
-                way();
-            })
-        } else {
+        // if (!this.loadBundle(custom)) {
+        //     LoadMgr.loadBundle_Single("level" + custom).then(() => {
+        //         way();
+        //     })
+        // } else {
             way();
-        }
+        // }
 
         this.onTouch(this.getNode("next"), () => {
             if (this.beClick) return;
             this.beClick = true;
             let way2 = () => {
-                Tools.changeStamina(-1, () => {
-                    PanelMgr.INS.openPanel({
-                        layer: Layer.gameLayer,
-                        panel: GameView,
-                        call: () => {
-                            PanelMgr.INS.closePanel(HomeView, true)
-                        }
-                    })
+                PanelMgr.INS.openPanel({
+                    layer: Layer.gameLayer,
+                    panel: GameView,
+                    call: () => {
+                        PanelMgr.INS.closePanel(HomeView, true)
+                    }
                 })
             }
-            if (!this.loadBundle(custom)) {
-                LoadMgr.loadBundle_Single("level" + custom).then(() => {
-                    way2();
-                })
-            } else {
+            // if (!this.loadBundle(custom)) {
+            //     LoadMgr.loadBundle_Single("level" + custom).then(() => {
+            //         way2();
+            //     })
+            // } else {
                 way2();
-            }
+            // }
         })
     }
 
