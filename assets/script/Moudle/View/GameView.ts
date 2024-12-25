@@ -493,7 +493,7 @@ export default class GameView extends LayerPanel {
         let resultPos = resultNode.getPosition();
         let resultWorldPos = resultParentNodeUITransform.convertToWorldSpaceAR(resultPos);
         let targetNodePos = nodeUITransform.convertToNodeSpaceAR(resultWorldPos);
-        let pos = nodeUITransform.convertToNodeSpaceAR(clickPos);
+        let pos = nodeUITransform.convertToNodeSpaceAR(new Vec3(clickPos.x, clickPos.y,0));
         let node = new Node();
         node.name = "particle";
         node.setPosition(pos);
@@ -501,6 +501,7 @@ export default class GameView extends LayerPanel {
         let particleUrl = "sub/image/view/gameView/particle/win";
         LoadMgr.loadParticle(particleUrl).then((particle: ParticleAsset) => {
             particleComp.file = particle;
+            console.log("11111"+particleComp);
         })
         this.node.addChild(node);
         tween(node)
@@ -551,12 +552,12 @@ export default class GameView extends LayerPanel {
         if(!gameViewUITransform){
             gameViewUITransform = this.node.addComponent(UITransform);
         }
-        let gameViewPos = gameViewUITransform.convertToNodeSpaceAR(clickPos);
+        let gameViewPos = gameViewUITransform.convertToNodeSpaceAR(new Vec3(clickPos.x, clickPos.y,0));
         node.setPosition(gameViewPos);
         nodeUITransform.setAnchorPoint(0.5, 0.5);
         let sprite: Sprite = node.addComponent(Sprite);
         sprite.sizeMode = Sprite.SizeMode.CUSTOM;
-        LoadMgr.loadSprite(sprite, "sub/image/view/gameView/public/err");
+        LoadMgr.loadSprite(sprite, "sub/image/view/gameView/public/err").then();
         this.node.addChild(node);
         this.errNode = node;
         let opacityComponent = node.getComponent(UIOpacity);

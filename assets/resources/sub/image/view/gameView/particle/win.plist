@@ -102,8 +102,6 @@
     <real>65.79000091552734</real>
     <key>tangentialAcceleration</key>
     <real>-92.11000061035156</real>
-    <key>spriteFrameUuid</key>
-    <string>74b14177-bc31-4c76-91de-c3701e952c22</string>
     <key>positionType</key>
     <integer>1</integer>
     <key>rotationIsDir</key>
@@ -112,5 +110,7 @@
     <integer>0</integer>
     <key>emissionRate</key>
     <real>999.999985098839</real>
+    <key>spriteFrameUuid</key>
+    <string>1baf3ec7-8683-4575-bbfc-75ced3ff2c9f@f9941</string>
   </dict>
 </plist>
